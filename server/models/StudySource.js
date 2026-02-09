@@ -6,6 +6,17 @@ const studySourceSchema = new mongoose.Schema({
     type: { type: String, enum: ['video', 'pdf', 'notes'], required: true },
     url: { type: String }, // YouTube URL or PDF storage URL
     content: { type: String }, // Extracted transcript or text
+    summary: { type: String }, // AI-generated summary
+    milestones: [{
+        timestamp: { type: Number },
+        label: { type: String }
+    }],
+    quiz: [{
+        question: { type: String },
+        options: [{ type: String }],
+        answer: { type: Number }, // Index of correct option
+        timestamp: { type: Number } // Video timestamp for context
+    }],
     chunks: [{
         text: { type: String },
         metadata: {
