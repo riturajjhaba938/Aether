@@ -28,16 +28,10 @@ const ContentPane = ({ source }) => {
         );
     }
 
-    // Mock Data if not yet generated AI
-    const milestones = source.milestones || [];
-    const quiz = source.quiz || [
-        {
-            question: "What is the observer effect in Quantum Mechanics?",
-            options: ["Particles change state when measured", "Light is a wave", "Gravity is a force", "None of the above"],
-            answer: 0,
-            timestamp: 45
-        }
-    ];
+    // Safely access AI Data with fallbacks
+    const aiData = source.aiData || {};
+    const milestones = aiData.interactive_timeline || source.milestones || [];
+    const quiz = aiData.quiz_bank || source.quiz || [];
 
     return (
         <div className="h-full flex flex-col gap-4 relative">
@@ -87,42 +81,49 @@ const ContentPane = ({ source }) => {
                                     <button onClick={() => setShowQuiz(false)} className="text-xs text-gray-400 hover:text-white">Close</button>
                                 </div>
 
-                                <div className="space-y-6">
-                                    {quiz.map((q, i) => (
-                                        <div key={i} className="space-y-3">
-                                            <p className="font-medium text-sm">{q.question}</p>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                {q.options.map((opt, optIndex) => (
+                                {quiz.length > 0 ? (
+                                    <div className="space-y-6">
+                                        {quiz.map((q, i) => (
+                                            <div key={i} className="space-y-3">
+                                                <p className="font-medium text-sm">{q.question}</p>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    {q.options.map((opt, optIndex) => (
+                                                        <button
+                                                            key={optIndex}
+                                                            onClick={() => setSelectedAnswer(`${i}-${optIndex}`)}
+                                                            className={`p-3 rounded-xl text-left text-xs transition-all border ${selectedAnswer === `${i}-${optIndex}`
+                                                                    ? optIndex === q.answer
+                                                                        ? 'bg-green-500/20 border-green-500/50 text-green-200'
+                                                                        : 'bg-red-500/20 border-red-500/50 text-red-200'
+                                                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                                }`}
+                                                        >
+                                                            {opt}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                {/* Contextual Link Button */}
+                                                <div className="flex justify-end items-center gap-2">
+                                                    {q.distractor_explanation && selectedAnswer?.startsWith(`${i}-`) && (
+                                                        <span className="text-[10px] text-gray-400 italic mr-auto">{q.distractor_explanation.substring(0, 50)}...</span>
+                                                    )}
                                                     <button
-                                                        key={optIndex}
-                                                        onClick={() => setSelectedAnswer(`${i}-${optIndex}`)}
-                                                        className={`p-3 rounded-xl text-left text-xs transition-all border ${selectedAnswer === `${i}-${optIndex}`
-                                                                ? optIndex === q.answer
-                                                                    ? 'bg-green-500/20 border-green-500/50 text-green-200'
-                                                                    : 'bg-red-500/20 border-red-500/50 text-red-200'
-                                                                : 'bg-white/5 border-white/5 hover:bg-white/10'
-                                                            }`}
+                                                        onClick={() => {
+                                                            seekTo(q.timestamp || 0);
+                                                            setPlaying(true);
+                                                        }}
+                                                        className="text-[10px] flex items-center gap-1 text-primary hover:underline hover:text-primary/80 transition-colors"
                                                     >
-                                                        {opt}
+                                                        <Play className="w-3 h-3" />
+                                                        Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
                                                     </button>
-                                                ))}
+                                                </div>
                                             </div>
-                                            {/* Contextual Link Button */}
-                                            <div className="flex justify-end">
-                                                <button
-                                                    onClick={() => {
-                                                        seekTo(q.timestamp || 0);
-                                                        setPlaying(true);
-                                                    }}
-                                                    className="text-[10px] flex items-center gap-1 text-primary hover:underline hover:text-primary/80 transition-colors"
-                                                >
-                                                    <Play className="w-3 h-3" />
-                                                    Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-gray-400 text-sm py-4">No quiz generated yet.</div>
+                                )}
                             </div>
                         </motion.div>
                     )}
@@ -145,7 +146,7 @@ const ContentPane = ({ source }) => {
                             className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                         >
                             <HelpCircle className="w-4 h-4" />
-                            {showQuiz ? 'Hide Quiz' : 'Take Quiz'}
+                            {showQuiz ? 'Hide Quiz' : 'Quiz'}
                         </button>
                         <div className="text-xs font-mono text-gray-400">
                             {Math.floor(progress / 60)}:{Math.floor(progress % 60).toString().padStart(2, '0')}
@@ -161,6 +162,7 @@ const ContentPane = ({ source }) => {
                                 key={i}
                                 onClick={() => seekTo(m.timestamp)}
                                 className="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full text-xs transition-all flex items-center gap-2 group"
+                                title={m.deep_dive || m.label}
                             >
                                 <div className="w-1.5 h-1.5 rounded-full bg-secondary group-hover:bg-primary transition-colors" />
                                 {m.label}

@@ -2,7 +2,7 @@ const StudySource = require('../models/StudySource');
 const { YoutubeTranscript } = require('youtube-transcript');
 const pdf = require('pdf-parse');
 
-const { generateStudyMaterial } = require('./aiController');
+const { generateAetherContent } = require('./aiController');
 
 exports.addSource = async (req, res) => {
     try {
@@ -20,13 +20,12 @@ exports.addSource = async (req, res) => {
                 content = "Transcript unavailable. AI analysis will be limited.";
             }
         } else if (type === 'pdf') {
-            // PDF logic would require file upload handling (multer)
-            // For now, assume content is sent or handle separately
-            content = req.body.content || 'PDF Content Parsing Placeholder';
+            // PDF logic placeholder
+            content = req.body.content || 'PDF Content Placeholder';
         }
 
-        // Generate AI Study Material
-        const aiData = await generateStudyMaterial(content);
+        // --- NEW: AI Synthesis Pass ---
+        const aiAnalysis = await generateAetherContent(content);
 
         const source = await StudySource.create({
             userId,
@@ -34,9 +33,7 @@ exports.addSource = async (req, res) => {
             type,
             url,
             content,
-            summary: aiData.summary,
-            milestones: aiData.milestones,
-            quiz: aiData.quiz
+            aiData: aiAnalysis
         });
 
         res.status(201).json(source);

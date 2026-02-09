@@ -17,6 +17,28 @@ const studySourceSchema = new mongoose.Schema({
         answer: { type: Number }, // Index of correct option
         timestamp: { type: Number } // Video timestamp for context
     }],
+    aiData: {
+        summary: { type: String },
+        knowledge_graph: [{
+            term: { type: String },
+            definition: { type: String },
+            relevance_score: { type: Number },
+            group: { type: Number } // Added for force-graph
+        }],
+        interactive_timeline: [{
+            timestamp: { type: Number },
+            label: { type: String },
+            deep_dive: { type: String }
+        }],
+        quiz_bank: [{
+            question: { type: String },
+            options: [{ type: String }],
+            answer: { type: Number }, // Index of correct option
+            distractor_explanation: { type: String },
+            timestamp: { type: Number } // Video timestamp link
+        }],
+        the_gravity_shift: { type: String }
+    },
     chunks: [{
         text: { type: String },
         metadata: {
