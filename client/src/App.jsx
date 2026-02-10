@@ -4,6 +4,8 @@ import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Workspace from './pages/Workspace';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/workspace/:sourceId" element={<Workspace />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>

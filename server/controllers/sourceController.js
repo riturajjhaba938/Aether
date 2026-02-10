@@ -10,8 +10,23 @@ exports.addSource = async (req, res) => {
         let content = '';
 
         if (type === 'video') {
-            // Extract YouTube Transcript
-            const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+            // Robust YouTube Video ID Extraction
+            let videoId = null;
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.hostname === 'youtu.be') {
+                    // Short URL: https://youtu.be/VIDEO_ID?si=...
+                    videoId = urlObj.pathname.slice(1);
+                } else if (urlObj.hostname.includes('youtube.com')) {
+                    // Standard: ?v=VIDEO_ID or /embed/VIDEO_ID or /shorts/VIDEO_ID
+                    videoId = urlObj.searchParams.get('v')
+                        || urlObj.pathname.split('/').filter(Boolean).pop();
+                }
+            } catch (e) {
+                // Fallback for malformed URLs
+                videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0];
+            }
+            console.log('Extracted Video ID:', videoId, 'from URL:', url);
             try {
                 const transcript = await YoutubeTranscript.fetchTranscript(videoId);
                 content = transcript.map(t => t.text).join(' ');
@@ -46,6 +61,16 @@ exports.getSources = async (req, res) => {
     try {
         const sources = await StudySource.find({ userId: req.params.userId });
         res.json(sources);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getSourceById = async (req, res) => {
+    try {
+        const source = await StudySource.findById(req.params.sourceId);
+        if (!source) return res.status(404).json({ message: 'Source not found' });
+        res.json(source);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

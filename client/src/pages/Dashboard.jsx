@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Video, FileText, MessageSquare, BookOpen, Send, Mic, Play, Settings, X, Loader } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Added for redirect
-import axios from 'axios'; // Added for API calls
-
-import Sidebar from '../components/dashboard/Sidebar';
-import ContentPane from '../components/dashboard/ContentPane';
-import ChatPane from '../components/dashboard/ChatPane';
-import KnowledgeGraph from '../components/dashboard/KnowledgeGraph';
+import { Plus, Video, FileText, Play, X, Loader } from 'lucide-react';
+import axios from 'axios';
 
 const Dashboard = () => {
-    const [activeSource, setActiveSource] = useState(null);
     const [sources, setSources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -20,7 +14,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const userId = localStorage.getItem('userId');
 
-    // Fetch Sources on Mount
+    // Redirect if not logged in
     useEffect(() => {
         if (!userId) {
             navigate('/login');
@@ -31,14 +25,12 @@ const Dashboard = () => {
             try {
                 const { data } = await axios.get(`/api/sources/${userId}`);
                 setSources(data);
-                if (data.length > 0) setActiveSource(data[0]);
-            } catch (error) {
-                console.error("Failed to fetch sources:", error);
+            } catch (err) {
+                console.error("Error fetching library", err);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchSources();
     }, [userId, navigate]);
 
@@ -52,7 +44,6 @@ const Dashboard = () => {
                 userId
             });
             setSources([...sources, data]);
-            setActiveSource(data); // Auto-select new source
             setShowAddModal(false);
             setNewSource({ title: '', url: '', type: 'video' });
         } catch (error) {
@@ -63,81 +54,70 @@ const Dashboard = () => {
         }
     };
 
-    // Transform AI Data for Knowledge Graph
-    const getGraphData = () => {
-        if (!activeSource) return { nodes: [], links: [] };
-
-        const aiNodes = activeSource.aiData?.knowledge_graph || [];
-        const rootId = activeSource.title || 'Root';
-
-        // Central Node
-        const nodes = [{ id: rootId, group: 0, val: 20 }];
-        const links = [];
-
-        // AI Generated Nodes
-        aiNodes.forEach((item, index) => {
-            nodes.push({
-                id: item.term,
-                group: item.group || 1,
-                val: item.relevance_score || 5
-            });
-            // Connect to Root
-            links.push({
-                source: rootId,
-                target: item.term
-            });
-        });
-
-        // Fallback Mock Data if empty
-        if (nodes.length === 1) {
-            return {
-                nodes: [{ id: 'Root', group: 1 }, { id: 'Concept A', group: 2 }, { id: 'Concept B', group: 2 }],
-                links: [{ source: 'Root', target: 'Concept A' }, { source: 'Root', target: 'Concept B' }]
-            };
-        }
-
-        return { nodes, links };
-    };
-
     if (loading) return (
-        <div className="h-screen flex items-center justify-center bg-[#0a0a0a] text-primary">
+        <div className="h-screen flex items-center justify-center bg-background text-primary">
             <Loader className="w-10 h-10 animate-spin" />
         </div>
     );
 
     return (
-        <div className="h-screen pt-20 flex overflow-hidden relative">
-            {/* Sidebar with Real Data & Add Handler */}
-            <Sidebar
-                sources={sources}
-                activeSource={activeSource}
-                setActiveSource={setActiveSource}
-                onAddSource={() => setShowAddModal(true)}
-            />
-
-            {/* Main Study Arena */}
-            <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 overflow-hidden">
-                {/* Left: Content Viewer (Video/PDF) */}
-                <div className="flex-[1.5] flex flex-col gap-4 overflow-hidden">
-                    <div className="flex-1 min-h-0">
-                        <ContentPane source={activeSource} />
-                    </div>
-                    <div className="h-64 flex-shrink-0">
-                        {/* Dynamic Knowledge Graph */}
-                        <KnowledgeGraph data={getGraphData()} />
-                    </div>
+        <div className="pt-20 sm:pt-24 px-3 sm:px-8 min-h-screen bg-background">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold font-heading">Your Aether Library</h1>
+                    <p className="text-gray-400 text-xs sm:text-sm mt-1">Select a source to launch your study workspace.</p>
                 </div>
+                <button
+                    onClick={() => setShowAddModal(true)}
+                    className="flex items-center gap-2 bg-primary text-black font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-primary/80 transition-all hover:scale-105 text-sm sm:text-base w-full sm:w-auto justify-center"
+                >
+                    <Plus size={18} /> Add New Source
+                </button>
+            </div>
 
-                {/* Right: AI Assistant & Notes */}
-                <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-                    <ChatPane source={activeSource} />
+            {sources.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[50vh] text-center">
+                    <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                        <Play className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">No Sources Yet</h3>
+                    <p className="text-gray-400 max-w-sm">Click "Add New Source" to paste a YouTube URL and let Aether synthesize your first study session.</p>
                 </div>
-            </main>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                    {sources.map((source) => (
+                        <motion.div
+                            key={source._id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="glass border border-white/10 p-4 sm:p-6 rounded-xl sm:rounded-2xl hover:border-primary/50 transition-all group cursor-pointer"
+                            onClick={() => navigate(`/workspace/${source._id}`)}
+                        >
+                            <div className="flex justify-between items-start mb-4">
+                                {source.type === 'video'
+                                    ? <Video className="text-primary" />
+                                    : <FileText className="text-blue-400" />
+                                }
+                                <span className="text-xs text-white/40 uppercase tracking-widest">{source.type}</span>
+                            </div>
+                            <h3 className="text-lg font-semibold mb-2 line-clamp-2">{source.title}</h3>
+                            {source.aiData?.summary && (
+                                <p className="text-xs text-gray-400 mb-4 line-clamp-2">{source.aiData.summary}</p>
+                            )}
+                            <button
+                                className="w-full flex items-center justify-center gap-2 bg-white/5 py-2.5 rounded-xl group-hover:bg-primary group-hover:text-black transition-all font-bold text-sm"
+                            >
+                                <Play size={16} /> Launch Aether
+                            </button>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
 
             {/* Add Source Modal */}
             <AnimatePresence>
                 {showAddModal && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
