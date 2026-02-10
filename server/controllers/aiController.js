@@ -20,27 +20,46 @@ Key Requirements:
 4. deep_dive in timeline should be a 1-sentence interesting fact.
 `;
 
+// Helper: wait for ms
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 exports.generateAetherContent = async (content) => {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    // Truncate content to avoid token limits for now, prioritizing start
-    const truncatedContent = content.length > 30000 ? content.substring(0, 30000) : content;
+  const MAX_RETRIES = 3;
 
-    const prompt = `${AETHER_SYSTEM_PROMPT}\n\nCONTENT TO PROCESS:\n${truncatedContent}`;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const truncatedContent = content.length > 30000 ? content.substring(0, 30000) : content;
+      const prompt = `${AETHER_SYSTEM_PROMPT}\n\nCONTENT TO PROCESS:\n${truncatedContent}`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    // Clean up potential markdown code blocks
-    const text = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("AI Synthesis Error:", error);
-    return {
-      summary: "AI Synthesis Failed. Please try again.",
-      knowledge_graph: [],
-      interactive_timeline: [],
-      quiz_bank: [],
-      the_gravity_shift: "Error processing content."
-    };
+      console.log(`[Aether AI] Attempt ${attempt}/${MAX_RETRIES}...`);
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+      console.log('[Aether AI] Synthesis successful!');
+      return JSON.parse(text);
+    } catch (error) {
+      console.error(`[Aether AI] Attempt ${attempt} failed:`, error.status, error.message?.substring(0, 100));
+
+      // If rate limited (429), wait and retry
+      if (error.status === 429 && attempt < MAX_RETRIES) {
+        const waitTime = attempt * 60000; // 1min, 2min, 3min
+        console.log(`[Aether AI] Rate limited. Waiting ${waitTime / 1000}s before retry...`);
+        await sleep(waitTime);
+        continue;
+      }
+
+      // Final attempt or non-retryable error
+      if (attempt === MAX_RETRIES) {
+        console.error("[Aether AI] All retries exhausted.");
+        return {
+          summary: "AI Synthesis Failed. Please try again.",
+          knowledge_graph: [],
+          interactive_timeline: [],
+          quiz_bank: [],
+          the_gravity_shift: "Error processing content."
+        };
+      }
+    }
   }
 };
