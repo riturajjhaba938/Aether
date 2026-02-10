@@ -105,36 +105,27 @@ const Dashboard = () => {
         setSynthStep(0);
 
         try {
-            let responseData;
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('title', newSource.title);
+            formData.append('type', newSource.type);
 
             if (newSource.type === 'video') {
-                // JSON upload for Video
-                const { data } = await axios.post('/api/sources', {
-                    ...newSource,
-                    userId
-                });
-                responseData = data;
-            } else {
-                // FormData upload for PDF
+                formData.append('url', newSource.url);
+            } else if (newSource.type === 'pdf') {
                 if (!selectedFile) {
                     alert("Please select a PDF file.");
                     setAdding(false);
                     return;
                 }
-
-                const formData = new FormData();
                 formData.append('file', selectedFile);
-                formData.append('userId', userId);
-                formData.append('type', 'pdf');
-                formData.append('title', newSource.title);
-
-                const { data } = await axios.post('/api/sources', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
-                responseData = data;
             }
 
-            setSources([...sources, responseData]);
+            const { data } = await axios.post('/api/sources', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            setSources([...sources, data]);
             setShowAddModal(false);
             setNewSource({ title: '', url: '', type: 'video' });
             setSelectedFile(null);
@@ -364,8 +355,8 @@ const Dashboard = () => {
                                                     animate={{ opacity: 1, x: 0 }}
                                                     transition={{ delay: i * 0.1 }}
                                                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs transition-all ${isDone ? 'bg-primary/10 text-primary' :
-                                                            isCurrent ? 'bg-white/10 text-white' :
-                                                                'text-gray-600'
+                                                        isCurrent ? 'bg-white/10 text-white' :
+                                                            'text-gray-600'
                                                         }`}
                                                 >
                                                     {isDone ? (
