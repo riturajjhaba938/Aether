@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
-import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X } from 'lucide-react'; // Added X import
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ContentPane = ({ source }) => {
+const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const playerRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -35,23 +35,31 @@ const ContentPane = ({ source }) => {
 
     return (
         <div className="h-full flex flex-col gap-4 relative">
-            <div className="flex-1 glass rounded-[32px] overflow-hidden relative group font-sans flex flex-col">
+            <div className="flex-1 glass rounded-2xl sm:rounded-[32px] overflow-hidden relative group font-sans flex flex-col">
                 {source.type === 'video' ? (
-                    <div className="flex-1 bg-black relative min-h-0">
-                        <ReactPlayer
-                            ref={playerRef}
-                            url={source.url}
-                            width="100%"
-                            height="100%"
-                            playing={playing}
-                            controls
-                            onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
-                            config={{
-                                youtube: {
-                                    playerVars: { showinfo: 0, modestbranding: 1 }
-                                }
-                            }}
-                        />
+                    <div className="flex-1 bg-black relative min-h-0" style={{ minHeight: '300px' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                            <ReactPlayer
+                                ref={playerRef}
+                                url={source.url}
+                                width="100%"
+                                height="100%"
+                                playing={playing}
+                                controls={true}
+                                onReady={() => setPlaying(true)}
+                                onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
+                                onError={(e) => console.error('ReactPlayer Error:', e)}
+                                config={{
+                                    youtube: {
+                                        playerVars: {
+                                            showinfo: 0,
+                                            modestbranding: 1,
+                                            origin: window.location.origin
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
                 ) : (
                     <div className="flex-1 bg-white/5 flex items-center justify-center text-gray-500">
@@ -92,10 +100,10 @@ const ContentPane = ({ source }) => {
                                                             key={optIndex}
                                                             onClick={() => setSelectedAnswer(`${i}-${optIndex}`)}
                                                             className={`p-3 rounded-xl text-left text-xs transition-all border ${selectedAnswer === `${i}-${optIndex}`
-                                                                    ? optIndex === q.answer
-                                                                        ? 'bg-green-500/20 border-green-500/50 text-green-200'
-                                                                        : 'bg-red-500/20 border-red-500/50 text-red-200'
-                                                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                                ? optIndex === q.answer
+                                                                    ? 'bg-green-500/20 border-green-500/50 text-green-200'
+                                                                    : 'bg-red-500/20 border-red-500/50 text-red-200'
+                                                                : 'bg-white/5 border-white/5 hover:bg-white/10'
                                                                 }`}
                                                         >
                                                             {opt}
@@ -131,26 +139,40 @@ const ContentPane = ({ source }) => {
             </div>
 
             {/* Control Bar */}
-            <div className="glass p-4 rounded-2xl flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">
+            <div className="glass p-2 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col gap-2 sm:gap-3 relative z-50">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <button
+                            onClick={onClose}
+                            className="p-1.5 sm:p-2 -ml-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                            title="Close Video"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+
+                        <div className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider flex-shrink-0 hidden sm:block">
                             {source.type}
                         </div>
-                        <h4 className="font-bold text-sm truncate max-w-[200px]">{source.title}</h4>
+                        <h4 className="font-bold text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px]">{source.title}</h4>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                        <button
+                            onClick={() => setViewMode(viewMode === 'focus' ? 'split' : 'focus')}
+                            className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                            title={viewMode === 'focus' ? "Exit Zen Mode" : "Enter Zen Mode"}
+                        >
+                            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">{viewMode === 'focus' ? 'Exit Zen' : 'Zen Mode'}</span>
+                        </button>
+
                         <button
                             onClick={() => setShowQuiz(!showQuiz)}
-                            className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                            className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                         >
-                            <HelpCircle className="w-4 h-4" />
-                            {showQuiz ? 'Hide Quiz' : 'Quiz'}
+                            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">{showQuiz ? 'Hide Quiz' : 'Quiz'}</span>
                         </button>
-                        <div className="text-xs font-mono text-gray-400">
-                            {Math.floor(progress / 60)}:{Math.floor(progress % 60).toString().padStart(2, '0')}
-                        </div>
                     </div>
                 </div>
 

@@ -23,8 +23,8 @@ const ChatPane = ({ source }) => {
     };
 
     return (
-        <div className="h-full glass rounded-[32px] flex flex-col overflow-hidden">
-            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+        <div className="h-full glass rounded-xl sm:rounded-[32px] flex flex-col overflow-hidden">
+            <div className="p-3 sm:p-6 border-b border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-secondary" />
                     <h3 className="font-bold text-sm">Aether AI Assistant</h3>
@@ -34,7 +34,7 @@ const ChatPane = ({ source }) => {
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
                 {messages.map((m, i) => (
                     <div key={i} className={`flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${m.role === 'assistant' ? 'bg-secondary/20' : 'bg-primary/20'
@@ -49,7 +49,7 @@ const ChatPane = ({ source }) => {
                 ))}
             </div>
 
-            <div className="p-4 bg-black/20">
+            <div className="p-2 sm:p-4 bg-black/20">
                 <div className="relative">
                     <input
                         type="text"
@@ -57,7 +57,7 @@ const ChatPane = ({ source }) => {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                         placeholder="Ask anything about your sources..."
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-4 pr-24 focus:border-primary outline-none transition-all text-sm"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl py-3 sm:py-4 pl-3 sm:pl-4 pr-20 sm:pr-24 focus:border-primary outline-none transition-all text-xs sm:text-sm"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                         <button className="p-2 text-gray-400 hover:text-white transition-colors">

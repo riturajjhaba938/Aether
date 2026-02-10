@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
     return (
-        <div className="relative pt-32 pb-20 overflow-hidden">
+        <div className="relative pt-24 sm:pt-32 pb-12 sm:pb-20 overflow-hidden">
             {/* Background Glows */}
             <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full" />
             <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-secondary/10 blur-[100px] rounded-full" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                 <div className="text-center max-w-3xl mx-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -25,7 +25,7 @@ const Home = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-6xl md:text-7xl font-bold tracking-tight mb-6"
+                        className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-4 sm:mb-6"
                     >
                         Your Second Brain for <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Complex Study.</span>
                     </motion.h1>
@@ -34,7 +34,7 @@ const Home = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-lg text-gray-400 mb-10 leading-relaxed"
+                        className="text-sm sm:text-lg text-gray-400 mb-6 sm:mb-10 leading-relaxed"
                     >
                         Synthesize YouTube lectures, PDFs, and your own notes into a unified,
                         AI-powered interactive experience. Stop searching, start understanding.
@@ -46,18 +46,18 @@ const Home = () => {
                         transition={{ delay: 0.3 }}
                         className="flex flex-col sm:flex-row items-center justify-center gap-4"
                     >
-                        <Link to="/login" className="px-8 py-4 bg-primary text-background font-bold rounded-2xl flex items-center gap-2 hover:scale-105 transition-transform">
+                        <Link to="/login" className="px-6 sm:px-8 py-3 sm:py-4 bg-primary text-background font-bold rounded-2xl flex items-center gap-2 hover:scale-105 transition-transform text-sm sm:text-base">
                             Get Started for Free
                             <ArrowRight className="w-5 h-5" />
                         </Link>
-                        <button className="px-8 py-4 glass font-bold rounded-2xl hover:bg-white/10 transition-all">
+                        <button className="px-6 sm:px-8 py-3 sm:py-4 glass font-bold rounded-2xl hover:bg-white/10 transition-all text-sm sm:text-base">
                             Watch Demo
                         </button>
                     </motion.div>
                 </div>
 
                 {/* Feature Grid */}
-                <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="mt-16 sm:mt-32 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                     {[
                         { icon: Video, title: "Video Deep-Link", desc: "Jump from an AI note directly to the video timestamp." },
                         { icon: FileText, title: "PDF Synthesis", desc: "AI compares your slides with lecture transcripts in real-time." },
@@ -68,7 +68,7 @@ const Home = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4 + (i * 0.1) }}
-                            className="glass p-8 rounded-3xl hover:border-primary/50 transition-colors group"
+                            className="glass p-5 sm:p-8 rounded-2xl sm:rounded-3xl hover:border-primary/50 transition-colors group"
                         >
                             <div className="p-3 bg-white/5 rounded-2xl w-fit mb-6 group-hover:bg-primary/20 transition-colors">
                                 <feature.icon className="w-6 h-6 text-primary" />
