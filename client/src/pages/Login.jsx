@@ -23,12 +23,13 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const endpoint = isLogin ? 'http://localhost:5000/api/auth/login' : 'http://localhost:5000/api/auth/register';
             const { data } = await axios.post(endpoint, formData);
 
             localStorage.setItem('userId', data._id);
             localStorage.setItem('token', data.token);
             localStorage.setItem('userName', data.name);
+            localStorage.setItem('userEmail', data.email);
 
             navigate('/dashboard');
         } catch (err) {
