@@ -2,7 +2,6 @@ const StudySource = require('../models/StudySource');
 const { YoutubeTranscript } = require('youtube-transcript');
 const pdf = require('pdf-parse');
 const MOCK_DATA = require('../data/mockAiData');
-
 const { generateAetherContent } = require('./aiController');
 
 // Extract YouTube video ID from various URL formats
@@ -115,5 +114,20 @@ exports.getSourceById = async (req, res) => {
         res.json(source);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+exports.deleteSource = async (req, res) => {
+    try {
+        const { sourceId } = req.params;
+        const deletedSource = await StudySource.findByIdAndDelete(sourceId);
+
+        if (!deletedSource) {
+            return res.status(404).json({ message: "Source not found" });
+        }
+
+        res.status(200).json({ message: "Source deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting source", error: error.message });
     }
 };
