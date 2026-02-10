@@ -51,12 +51,13 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
     const [showQuiz, setShowQuiz] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showGame, setShowGame] = useState(false);
-
+    const [attempts, setAttempts] = useState({});
 
     // Reset error when source changes
     useEffect(() => {
         setVideoError(false);
         setPlaying(false);
+        setAttempts({});
     }, [source]);
 
     // Handle external seek requests using native postMessage to the iframe
@@ -187,7 +188,15 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                     {q.options.map((opt, optIndex) => (
                                                         <button
                                                             key={optIndex}
-                                                            onClick={() => setSelectedAnswer(`${i}-${optIndex}`)}
+                                                            onClick={() => {
+                                                                setSelectedAnswer(`${i}-${optIndex}`);
+                                                                if (optIndex !== q.answer) {
+                                                                    setAttempts(prev => ({
+                                                                        ...prev,
+                                                                        [i]: (prev[i] || 0) + 1
+                                                                    }));
+                                                                }
+                                                            }}
                                                             className={`p-3 rounded-xl text-left text-[11px] transition-all border ${selectedAnswer === `${i}-${optIndex}`
                                                                 ? optIndex === q.answer
                                                                     ? 'bg-green-500/20 border-green-500/50 text-green-200'
@@ -223,18 +232,20 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                         )}
                                                     </div>
 
-                                                    {(q.timestamp !== undefined && q.timestamp !== null) && (
-                                                        <button
+                                                    {((attempts[i] || 0) >= 2 && q.timestamp !== undefined && q.timestamp !== null) && (
+                                                        <motion.button
+                                                            initial={{ scale: 0.9, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 seekTo(q.timestamp || 0);
                                                                 setPlaying(true);
                                                             }}
-                                                            className="text-[10px] flex items-center gap-1.5 px-3 py-2 bg-primary/20 text-primary border border-primary/30 rounded-lg hover:bg-primary/40 transition-all font-bold shadow-lg shadow-primary/10 whitespace-nowrap"
+                                                            className="text-[10px] flex items-center gap-1.5 px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/40 transition-all font-bold shadow-lg shadow-secondary/10 whitespace-nowrap"
                                                         >
                                                             <Play className="w-3 h-3 fill-current" />
-                                                            Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
-                                                        </button>
+                                                            Rewatch Relevant Segment ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
+                                                        </motion.button>
                                                     )}
                                                 </div>
                                             </div>
