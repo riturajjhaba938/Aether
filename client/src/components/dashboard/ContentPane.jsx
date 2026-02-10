@@ -4,8 +4,8 @@ import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Game
 import { motion, AnimatePresence } from 'framer-motion';
 import ConceptGame from './ConceptGame';
 
-// Extract clean YouTube video ID from any URL format
 const extractVideoId = (url) => {
+    if (!url) return '';
     try {
         const urlObj = new URL(url);
         if (urlObj.hostname === 'youtu.be') return urlObj.pathname.slice(1);
@@ -13,7 +13,11 @@ const extractVideoId = (url) => {
             return urlObj.searchParams.get('v') || urlObj.pathname.split('/').filter(Boolean).pop();
         }
     } catch (e) { }
-    return url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0] || url;
+
+    // Fallback logic
+    const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0] || url;
+    console.log('[ContentPane] Extracted Video ID:', id, 'from:', url);
+    return id;
 };
 
 const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
