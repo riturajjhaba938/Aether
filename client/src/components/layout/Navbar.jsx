@@ -79,7 +79,7 @@ const Navbar = () => {
                             </button>
 
                             {showDropdown && (
-                                <div className="absolute right-0 mt-2 w-56 glass border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                                <div className="absolute right-0 mt-2 w-56 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[60]">
                                     <div className="px-4 py-3 border-b border-white/10">
                                         <p className="text-sm font-bold">{userName}</p>
                                         <p className="text-[10px] text-gray-400 mt-0.5">Aether Member</p>

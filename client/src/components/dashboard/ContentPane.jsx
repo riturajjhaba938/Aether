@@ -193,13 +193,14 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                     {q.distractor_explanation && selectedAnswer?.startsWith(`${i}-`) && (
                                                         <span className="text-[10px] text-gray-400 italic mr-auto line-clamp-1">{q.distractor_explanation}</span>
                                                     )}
-                                                    {q.timestamp !== undefined && (
+                                                    {(q.timestamp !== undefined && q.timestamp !== null) && (
                                                         <button
-                                                            onClick={() => {
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
                                                                 seekTo(q.timestamp || 0);
                                                                 setPlaying(true);
                                                             }}
-                                                            className="text-[10px] flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all font-bold"
+                                                            className="text-[10px] flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/20 text-primary border border-primary/30 rounded-lg hover:bg-primary/40 transition-all font-bold shadow-lg shadow-primary/10"
                                                         >
                                                             <Play className="w-3 h-3 fill-current" />
                                                             Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
