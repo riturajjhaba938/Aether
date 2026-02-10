@@ -97,4 +97,4 @@ Contributions are welcome! If you have ideas for new learning modules or 3D visu
 ---
 
 ## 📜 License
-MIT License - Created with ❤️ by the Aether Team.
+MIT License - Created with ❤️ by the Code Bros.
