@@ -19,7 +19,7 @@ const extractVideoId = (url) => {
     return id;
 };
 
-const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
+const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
     const playerRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -27,6 +27,11 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const [showQuiz, setShowQuiz] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showGame, setShowGame] = useState(false);
+
+    // Debug logging
+    useEffect(() => {
+        console.log('[ContentPane] Current Source:', source);
+    }, [source]);
 
     // Reset error when source changes
     useEffect(() => {
@@ -68,7 +73,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                                 <AlertCircle className="w-12 h-12 text-red-500 mb-2" />
                                 <h3 className="text-lg font-bold text-red-400">Video Playback Failed</h3>
                                 <p className="text-sm text-gray-400 max-w-xs">Could not load video. The URL might be invalid or restricted.</p>
-                                <p className="text-xs text-gray-500 mt-2 font-mono">{source.url}</p>
+                                <p className="text-xs text-gray-500 mt-2 font-mono">{source.url || 'No URL provided'}</p>
                             </div>
                         ) : (
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
@@ -115,6 +120,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                                 <div className="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
                                     <FileText className="w-16 h-16 mb-4" />
                                     <p>No text content available.</p>
+                                    <p className="text-xs mt-2 text-gray-600">{source.title}</p>
                                 </div>
                             )}
                         </div>
@@ -194,11 +200,20 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                 <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         onClick={onClose}
-                        className="p-1.5 sm:p-2 -ml-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                        className="p-1.5 sm:p-2 -ml-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors flex-shrink-0"
                         title="Close"
                     >
                         <X className="w-4 h-4" />
                     </button>
+                    {onDelete && (
+                        <button
+                            onClick={onDelete}
+                            className="p-1.5 sm:p-2 hover:bg-red-500/20 rounded-lg text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                            title="Delete Source"
+                        >
+                            <AlertCircle className="w-4 h-4" />
+                        </button>
+                    )}
 
                     <div className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider flex-shrink-0">
                         {source.type}

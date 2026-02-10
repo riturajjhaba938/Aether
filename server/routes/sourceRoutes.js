@@ -12,6 +12,7 @@ const upload = multer({
 
 // Use upload.single('file') to handle multipart/form-data
 router.post('/', upload.single('file'), addSource);
+router.delete('/:sourceId', deleteSource);
 router.get('/single/:sourceId', getSourceById);
 router.get('/:userId', getSources);
 

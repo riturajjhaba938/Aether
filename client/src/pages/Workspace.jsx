@@ -49,6 +49,18 @@ const Workspace = () => {
         </div>
     );
 
+    const handleDelete = async () => {
+        if (!window.confirm("Are you sure you want to delete this source? This action cannot be undone.")) return;
+
+        try {
+            await axios.delete(`/api/sources/${sourceId}`);
+            navigate('/dashboard');
+        } catch (err) {
+            console.error("Failed to delete source:", err);
+            alert("Failed to delete source. Please try again.");
+        }
+    };
+
     const isFocusMode = viewMode === 'focus';
 
     return (
@@ -74,6 +86,7 @@ const Workspace = () => {
                             viewMode={viewMode}
                             setViewMode={setViewMode}
                             onClose={() => navigate('/dashboard')}
+                            onDelete={handleDelete}
                         />
                     </div>
                     {/* Knowledge Graph - hidden in Focus Mode and on small screens */}
