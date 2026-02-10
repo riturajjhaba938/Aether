@@ -4,6 +4,18 @@ import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Game
 import { motion, AnimatePresence } from 'framer-motion';
 import ConceptGame from './ConceptGame';
 
+// Extract clean YouTube video ID from any URL format
+const extractVideoId = (url) => {
+    try {
+        const urlObj = new URL(url);
+        if (urlObj.hostname === 'youtu.be') return urlObj.pathname.slice(1);
+        if (urlObj.hostname.includes('youtube.com')) {
+            return urlObj.searchParams.get('v') || urlObj.pathname.split('/').filter(Boolean).pop();
+        }
+    } catch (e) { }
+    return url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0] || url;
+};
+
 const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const playerRef = useRef(null);
     const [playing, setPlaying] = useState(false);
@@ -43,20 +55,18 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
                             <ReactPlayer
                                 ref={playerRef}
-                                url={source.url}
+                                url={`https://www.youtube.com/watch?v=${extractVideoId(source.url)}`}
                                 width="100%"
                                 height="100%"
                                 playing={playing}
                                 controls={true}
-                                onReady={() => setPlaying(true)}
                                 onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
                                 onError={(e) => console.error('ReactPlayer Error:', e)}
                                 config={{
                                     youtube: {
                                         playerVars: {
                                             showinfo: 0,
-                                            modestbranding: 1,
-                                            origin: window.location.origin
+                                            modestbranding: 1
                                         }
                                     }
                                 }}
