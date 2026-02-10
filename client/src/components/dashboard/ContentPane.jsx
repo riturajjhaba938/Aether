@@ -232,7 +232,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                         )}
                                                     </div>
 
-                                                    {((attempts[i] || 0) >= 2 && q.timestamp !== undefined && q.timestamp !== null) && (
+                                                    {((attempts[i] || 0) >= 1 && q.timestamp !== undefined && q.timestamp !== null) && (
                                                         <motion.button
                                                             initial={{ scale: 0.9, opacity: 0 }}
                                                             animate={{ scale: 1, opacity: 1 }}
