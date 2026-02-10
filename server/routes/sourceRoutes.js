@@ -1,5 +1,5 @@
 const express = require('express');
-const { addSource, getSources, getSourceById } = require('../controllers/sourceController');
+const { addSource, getSources, getSourceById, deleteSource } = require('../controllers/sourceController');
 const router = express.Router();
 const multer = require('multer');
 
