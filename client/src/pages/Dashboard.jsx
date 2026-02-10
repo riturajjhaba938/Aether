@@ -266,6 +266,26 @@ const Dashboard = () => {
                                                     required
                                                 />
                                             </div>
+                                            
+                                            <div className="mt-4">
+                                                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2 font-bold">Try a Demo Source</p>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {[
+                                                        { title: "Neural Networks (3Blue1Brown)", url: "https://www.youtube.com/watch?v=aircAruvnKk" },
+                                                        { title: "The Egg (Kurzgesagt)", url: "https://www.youtube.com/watch?v=h6fcK_fRYaI" },
+                                                        { title: "Quantum Computers", url: "https://www.youtube.com/watch?v=JhHMJCUmq28" }
+                                                    ].map((demo, i) => (
+                                                        <button
+                                                            key={i}
+                                                            type="button"
+                                                            onClick={() => setNewSource({ ...newSource, title: demo.title, url: demo.url })}
+                                                            className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-full transition-colors text-gray-400 hover:text-primary"
+                                                        >
+                                                            {demo.title}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         ) : (
                                             <div>
                                                 <label className="block text-xs font-medium text-gray-400 mb-1">Upload PDF</label>
