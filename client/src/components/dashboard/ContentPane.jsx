@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/lazy';
 import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } => 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ConceptGame from './ConceptGame';
 
 const extractVideoId = (url) => {
