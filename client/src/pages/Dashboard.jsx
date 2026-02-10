@@ -49,7 +49,7 @@ const Dashboard = () => {
 
         const fetchSources = async () => {
             try {
-                const { data } = await axios.get(`/api/sources/${userId}`);
+                const { data } = await axios.get(`/sources/${userId}`);
                 setSources(data);
                 // Auto-launch most recent source if returning to dashboard
                 if (data.length > 0 && !loading) {
@@ -125,7 +125,7 @@ const Dashboard = () => {
                 formData.append('file', selectedFile);
             }
 
-            const { data } = await axios.post('/api/sources', formData, {
+            const { data } = await axios.post('/sources', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 

@@ -16,7 +16,7 @@ const Workspace = () => {
     useEffect(() => {
         const loadSource = async () => {
             try {
-                const { data } = await axios.get(`/api/sources/single/${sourceId}`);
+                const { data } = await axios.get(`/sources/single/${sourceId}`);
                 setSource(data);
             } catch (err) {
                 console.error("Failed to load source:", err);
@@ -53,7 +53,7 @@ const Workspace = () => {
         if (!window.confirm("Are you sure you want to delete this source? This action cannot be undone.")) return;
 
         try {
-            await axios.delete(`/api/sources/${sourceId}`);
+            await axios.delete(`/sources/${sourceId}`);
             navigate('/dashboard');
         } catch (err) {
             console.error("Failed to delete source:", err);

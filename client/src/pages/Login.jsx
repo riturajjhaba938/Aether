@@ -23,7 +23,7 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const endpoint = isLogin ? '/auth/login' : '/auth/register';
             const { data } = await axios.post(endpoint, formData);
 
             localStorage.setItem('userId', data._id);
