@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const AETHER_SYSTEM_PROMPT = `You are the Aether Synthesis Engine. Analyze this content and return ONLY valid JSON (no markdown, no backticks):
+const AETHER_SYSTEM_PROMPT = `You are the Aether Synthesis Engine. Analyze content and return ONLY valid JSON:
 {
   "summary": "2-3 sentence summary",
   "knowledge_graph": [{"term": "concept name", "group": 1, "definition": "brief definition"}],
@@ -30,7 +30,6 @@ exports.generateAetherContent = async (content) => {
         }
       });
 
-      // Trim content aggressively for speed
       const truncatedContent = content.length > 15000 ? content.substring(0, 15000) : content;
       const prompt = `${AETHER_SYSTEM_PROMPT}\n\nCONTENT:\n${truncatedContent}`;
 
