@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
-import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X } from 'lucide-react'; // Added X import
+import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ConceptGame from './ConceptGame';
 
 const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const playerRef = useRef(null);
@@ -9,6 +10,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const [progress, setProgress] = useState(0);
     const [showQuiz, setShowQuiz] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [showGame, setShowGame] = useState(false);
 
     // Handle external seek requests
     const seekTo = (seconds) => {
@@ -171,6 +173,13 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                             <HelpCircle className="w-4 h-4" />
                             {showQuiz ? 'Hide Quiz' : 'Quiz'}
                         </button>
+                        <button
+                            onClick={() => setShowGame(true)}
+                            className="p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20"
+                        >
+                            <Gamepad2 className="w-4 h-4" />
+                            Play Game
+                        </button>
                     </div>
                 </div>
 
@@ -189,6 +198,13 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                     >
                         <HelpCircle className="w-3.5 h-3.5" />
                         {showQuiz ? 'Hide Quiz' : 'Quiz'}
+                    </button>
+                    <button
+                        onClick={() => setShowGame(true)}
+                        className="flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20"
+                    >
+                        <Gamepad2 className="w-3.5 h-3.5" />
+                        Game
                     </button>
                 </div>
 
@@ -209,6 +225,11 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                     </div>
                 )}
             </div>
+
+            {/* Concept Matcher Game Overlay */}
+            {showGame && (
+                <ConceptGame source={source} onClose={() => setShowGame(false)} />
+            )}
         </div>
     );
 };
