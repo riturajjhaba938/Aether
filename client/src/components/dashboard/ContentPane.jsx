@@ -149,50 +149,80 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                     </div>
                 )}
 
-                {/* Quiz Overlay / Panel */}
+                {/* Quiz Overlay / Panel - Now an absolute overlay to prevent layout shifts */}
                 <AnimatePresence>
                     {showQuiz && (
                         <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="bg-black/50 backdrop-blur-md border-t border-white/10"
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 100, opacity: 0 }}
+                            className="absolute bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-primary/20 max-h-[80%] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20"
                         >
-                            <div className="p-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="font-bold flex items-center gap-2">
-                                        <HelpCircle className="w-5 h-5 text-primary" />
+                            <div className="p-4 sm:p-6 pb-20 sm:pb-6"> {/* Bottom padding for mobile visibility */}
+                                <div className="flex items-center justify-between mb-4 sticky top-0 bg-black/10 backdrop-blur-sm -mx-4 -mt-4 p-4 z-10 border-b border-white/5">
+                                    <h3 className="font-bold flex items-center gap-2 text-sm sm:text-base">
+                                        <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                         Contextual Quiz
                                     </h3>
-                                    <button onClick={() => setShowQuiz(false)} className="text-xs text-gray-400 hover:text-white">Close</button>
+                                    <button
+                                        onClick={() => setShowQuiz(false)}
+                                        className="p-1 px-2 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-gray-400 hover:text-white transition-colors border border-white/10"
+                                    >
+                                        Close
+                                    </button>
                                 </div>
 
                                 {quiz.length > 0 ? (
-                                    <div className="space-y-6">
+                                    <div className="space-y-8">
                                         {quiz.map((q, i) => (
-                                            <div key={i} className="space-y-3">
-                                                <p className="font-medium text-sm">{q.question}</p>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div key={i} className="space-y-3 pb-4 border-b border-white/5 last:border-0">
+                                                <div className="flex gap-3">
+                                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-[10px] font-bold">
+                                                        {i + 1}
+                                                    </span>
+                                                    <p className="font-medium text-sm leading-relaxed">{q.question}</p>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-9">
                                                     {q.options.map((opt, optIndex) => (
                                                         <button
                                                             key={optIndex}
                                                             onClick={() => setSelectedAnswer(`${i}-${optIndex}`)}
-                                                            className={`p-3 rounded-xl text-left text-xs transition-all border ${selectedAnswer === `${i}-${optIndex}`
+                                                            className={`p-3 rounded-xl text-left text-[11px] transition-all border ${selectedAnswer === `${i}-${optIndex}`
                                                                 ? optIndex === q.answer
                                                                     ? 'bg-green-500/20 border-green-500/50 text-green-200'
                                                                     : 'bg-red-500/20 border-red-500/50 text-red-200'
-                                                                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                                : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-primary/30'
                                                                 }`}
                                                         >
-                                                            {opt}
+                                                            <div className="flex justify-between items-center gap-2">
+                                                                <span>{opt}</span>
+                                                                {selectedAnswer === `${i}-${optIndex}` && (
+                                                                    optIndex === q.answer
+                                                                        ? <CheckCircle size={14} className="text-green-400 flex-shrink-0" />
+                                                                        : <X size={14} className="text-red-400 flex-shrink-0" />
+                                                                )}
+                                                            </div>
                                                         </button>
                                                     ))}
                                                 </div>
-                                                {/* Contextual Link Button */}
-                                                <div className="flex justify-end items-center gap-2">
-                                                    {q.distractor_explanation && selectedAnswer?.startsWith(`${i}-`) && (
-                                                        <span className="text-[10px] text-gray-400 italic mr-auto line-clamp-1">{q.distractor_explanation}</span>
-                                                    )}
+
+                                                {/* Contextual Link Button & Feedback */}
+                                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pl-9 mt-2">
+                                                    <div className="flex-1">
+                                                        {selectedAnswer?.startsWith(`${i}-`) && (
+                                                            <motion.p
+                                                                initial={{ opacity: 0, x: -10 }}
+                                                                animate={{ opacity: 1, x: 0 }}
+                                                                className={`text-[10px] italic ${selectedAnswer.endsWith(`-${q.answer}`) ? 'text-green-400/70' : 'text-gray-400'}`}
+                                                            >
+                                                                {selectedAnswer.endsWith(`-${q.answer}`)
+                                                                    ? "Correct! Great job."
+                                                                    : q.distractor_explanation || "Not quite right. Try again or check the explanation."}
+                                                            </motion.p>
+                                                        )}
+                                                    </div>
+
                                                     {(q.timestamp !== undefined && q.timestamp !== null) && (
                                                         <button
                                                             onClick={(e) => {
@@ -200,7 +230,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                                 seekTo(q.timestamp || 0);
                                                                 setPlaying(true);
                                                             }}
-                                                            className="text-[10px] flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/20 text-primary border border-primary/30 rounded-lg hover:bg-primary/40 transition-all font-bold shadow-lg shadow-primary/10"
+                                                            className="text-[10px] flex items-center gap-1.5 px-3 py-2 bg-primary/20 text-primary border border-primary/30 rounded-lg hover:bg-primary/40 transition-all font-bold shadow-lg shadow-primary/10 whitespace-nowrap"
                                                         >
                                                             <Play className="w-3 h-3 fill-current" />
                                                             Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
@@ -211,7 +241,9 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center text-gray-400 text-sm py-4">No quiz generated yet.</div>
+                                    <div className="text-center text-gray-400 text-sm py-8 bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                        No quiz generated for this source yet.
+                                    </div>
                                 )}
                             </div>
                         </motion.div>
