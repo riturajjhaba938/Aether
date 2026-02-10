@@ -247,12 +247,11 @@ const MOCK_DATA = {
             }
         ],
         the_gravity_shift: "A matrix is like a magic box — you put a shape in one side (a vector), and it comes out transformed (rotated, stretched, flipped) on the other side. The numbers in the matrix are the 'instructions' for how to transform it!"
-    }
-},
+    },
 
-// Neural Networks: https://youtu.be/aircAruvnKk
-"aircAruvnKk": {
-    summary: "Neural networks are computing systems inspired by the biological brain, composed of layers of artificial neurons. Each neuron takes inputs, weights them, adds a bias, and passes the result through an activation function (like sigmoid or ReLU). The network 'learns' by adjusting these weights and biases to minimize error, allowing it to recognize patterns like handwritten digits.",
+    // Neural Networks: https://youtu.be/aircAruvnKk
+    "aircAruvnKk": {
+        summary: "Neural networks are computing systems inspired by the biological brain, composed of layers of artificial neurons. Each neuron takes inputs, weights them, adds a bias, and passes the result through an activation function (like sigmoid or ReLU). The network 'learns' by adjusting these weights and biases to minimize error, allowing it to recognize patterns like handwritten digits.",
         knowledge_graph: [
             { term: "Neuron", group: 1, definition: "A computational unit that takes inputs, applies weights, adds bias, and fires an output" },
             { term: "Weight", group: 1, definition: "A number representing the strength of connection between two neurons" },
@@ -264,40 +263,40 @@ const MOCK_DATA = {
             { term: "Backpropagation", group: 2, definition: "The algorithm used to calculate gradients and update weights to minimize error" },
             { term: "MNIST", group: 2, definition: "A classic dataset of handwritten digits used to train and test image recognition systems" }
         ],
-            interactive_timeline: [
-                { timestamp: 0, label: "The Goal", deep_dive: "The goal is to build a system that can recognize handwritten digits (0-9) from a grid of pixels." },
-                { timestamp: 120, label: "Structure of the Network", deep_dive: "The network has an input layer (784 neurons for pixels), hidden layers, and an output layer (10 neurons)." },
-                { timestamp: 300, label: "Weights & Biases", deep_dive: "Weights determine pixel importance; biases set the activation threshold." },
-                { timestamp: 540, label: "The Sigmoid Function", deep_dive: "Sigmoid maps any number to a value between 0 and 1, representing the 'confidence' of activation." },
-                { timestamp: 750, label: "Matrix Notation", deep_dive: "The entire layer operation can be written as a single matrix multiplication: a(L) = σ(Wa(L-1) + b)." },
-                { timestamp: 960, label: "What is it Learning?", deep_dive: "The network isn't memorizing shapes; it's learning to decompose inputs into smaller features like edges and loops." }
-            ],
-                quiz_bank: [
-                    {
-                        question: "What is the purpose of an activation function?",
-                        options: ["To store data", "To determine the output of a neuron", "To delete the neuron", "To add noise"],
-                        answer: 1,
-                        distractor_explanation: "The activation function (like Sigmoid) decides the output level of the neuron based on its weighted input."
-                    },
-                    {
-                        question: "What does a bias do?",
-                        options: ["Identifies the neuron", "Shifts the activation threshold", "Multiplies the input", "Resets the network"],
-                        answer: 1,
-                        distractor_explanation: "A bias shifts the activation curve, effectively controlling the threshold at which the neuron fires."
-                    },
-                    {
-                        question: "In the example, what does a neuron in the first hidden layer represent?",
-                        options: ["A full number", "A specific pixel", "Abstract patterns or edges", "The final answer"],
-                        answer: 2,
-                        distractor_explanation: "Hidden neurons often learn to recognize substructures like edges or small curves."
-                    }
-                ],
-                    the_gravity_shift: "Think of a neural network like a plinko board where the pegs (weights) move. You drop a ball (input), and if it lands in the wrong bin, you nudge the pegs slightly so next time it lands in the right one!"
-},
+        interactive_timeline: [
+            { timestamp: 0, label: "The Goal", deep_dive: "The goal is to build a system that can recognize handwritten digits (0-9) from a grid of pixels." },
+            { timestamp: 120, label: "Structure of the Network", deep_dive: "The network has an input layer (784 neurons for pixels), hidden layers, and an output layer (10 neurons)." },
+            { timestamp: 300, label: "Weights & Biases", deep_dive: "Weights determine pixel importance; biases set the activation threshold." },
+            { timestamp: 540, label: "The Sigmoid Function", deep_dive: "Sigmoid maps any number to a value between 0 and 1, representing the 'confidence' of activation." },
+            { timestamp: 750, label: "Matrix Notation", deep_dive: "The entire layer operation can be written as a single matrix multiplication: a(L) = σ(Wa(L-1) + b)." },
+            { timestamp: 960, label: "What is it Learning?", deep_dive: "The network isn't memorizing shapes; it's learning to decompose inputs into smaller features like edges and loops." }
+        ],
+        quiz_bank: [
+            {
+                question: "What is the purpose of an activation function?",
+                options: ["To store data", "To determine the output of a neuron", "To delete the neuron", "To add noise"],
+                answer: 1,
+                distractor_explanation: "The activation function (like Sigmoid) decides the output level of the neuron based on its weighted input."
+            },
+            {
+                question: "What does a bias do?",
+                options: ["Identifies the neuron", "Shifts the activation threshold", "Multiplies the input", "Resets the network"],
+                answer: 1,
+                distractor_explanation: "A bias shifts the activation curve, effectively controlling the threshold at which the neuron fires."
+            },
+            {
+                question: "In the example, what does a neuron in the first hidden layer represent?",
+                options: ["A full number", "A specific pixel", "Abstract patterns or edges", "The final answer"],
+                answer: 2,
+                distractor_explanation: "Hidden neurons often learn to recognize substructures like edges or small curves."
+            }
+        ],
+        the_gravity_shift: "Think of a neural network like a plinko board where the pegs (weights) move. You drop a ball (input), and if it lands in the wrong bin, you nudge the pegs slightly so next time it lands in the right one!"
+    },
 
-// The Egg: https://youtu.be/h6fcK_fRYaI
-"h6fcK_fRYaI": {
-    summary: "The Egg is a short story by Andy Weir about a man who dies and meets God. God reveals that the man will be reincarnated as every human who has ever lived and will ever live. The entire universe was created as an egg for the main character to mature until they have lived every human life and can become a god themselves.",
+    // The Egg: https://youtu.be/h6fcK_fRYaI
+    "h6fcK_fRYaI": {
+        summary: "The Egg is a short story by Andy Weir about a man who dies and meets God. God reveals that the man will be reincarnated as every human who has ever lived and will ever live. The entire universe was created as an egg for the main character to mature until they have lived every human life and can become a god themselves.",
         knowledge_graph: [
             { term: "Reincarnation", group: 1, definition: "The concept of being born again in a new body after death" },
             { term: "The Egg", group: 1, definition: "Metaphor for the universe serving as an incubator for a developing god-consciousness" },
@@ -307,40 +306,40 @@ const MOCK_DATA = {
             { term: "Solipsism", group: 2, definition: "The philosophical idea that only one's own mind is sure to exist (taken to the extreme here)" },
             { term: "Empathy", group: 2, definition: "The ultimate lesson of the story — hurting others is hurting oneself" }
         ],
-            interactive_timeline: [
-                { timestamp: 0, label: "The Afterlife", deep_dive: "The protagonist dies in a car crash and meets a being in a void." },
-                { timestamp: 120, label: "Reincarnation Revealed", deep_dive: "He learns he will be reincarnated as a Chinese peasant girl in 540 AD." },
-                { timestamp: 240, label: "Time is Nonlinear", deep_dive: "Time doesn't flow linearly for the soul; he can be born in the past or future." },
-                { timestamp: 360, label: "You Are Everyone", deep_dive: "The shocking revelation: he is Abraham Lincoln, John Wilkes Booth, and even Jesus." },
-                { timestamp: 420, label: "The Purpose and Meaning", deep_dive: "The universe exists to help him grow by experiencing all human lives." },
-                { timestamp: 460, label: "Hatching", deep_dive: "Once he has lived every life, he will be ready to be born as a godlike being." }
-            ],
-                quiz_bank: [
-                    {
-                        question: "Who is the main character reincarnated as?",
-                        options: ["Only good people", "Only famous people", "Every human being who ever lived", "Animals"],
-                        answer: 2,
-                        distractor_explanation: "The story reveals he is, in fact, every human being throughout all of history."
-                    },
-                    {
-                        question: "Why was the universe created according to the story?",
-                        options: ["As a punishment", "As an egg for the protagonist to grow", "It was an accident", "To trap souls"],
-                        answer: 1,
-                        distractor_explanation: "The universe is described as an egg, an incubator for the protagonist's soul to mature."
-                    },
-                    {
-                        question: "What happens when 'you' hurt someone?",
-                        options: ["You gain karma", "You hurt yourself", "Nothing happens", "God gets angry"],
-                        answer: 1,
-                        distractor_explanation: "Since you are everyone, every act of violence is self-inflicted."
-                    }
-                ],
-                    the_gravity_shift: "Imagine playing a multiplayer video game, but realizing you are actually controlling every single character on the server, just taking turns one life at a time. That's The Egg."
-},
+        interactive_timeline: [
+            { timestamp: 0, label: "The Afterlife", deep_dive: "The protagonist dies in a car crash and meets a being in a void." },
+            { timestamp: 120, label: "Reincarnation Revealed", deep_dive: "He learns he will be reincarnated as a Chinese peasant girl in 540 AD." },
+            { timestamp: 240, label: "Time is Nonlinear", deep_dive: "Time doesn't flow linearly for the soul; he can be born in the past or future." },
+            { timestamp: 360, label: "You Are Everyone", deep_dive: "The shocking revelation: he is Abraham Lincoln, John Wilkes Booth, and even Jesus." },
+            { timestamp: 420, label: "The Purpose and Meaning", deep_dive: "The universe exists to help him grow by experiencing all human lives." },
+            { timestamp: 460, label: "Hatching", deep_dive: "Once he has lived every life, he will be ready to be born as a godlike being." }
+        ],
+        quiz_bank: [
+            {
+                question: "Who is the main character reincarnated as?",
+                options: ["Only good people", "Only famous people", "Every human being who ever lived", "Animals"],
+                answer: 2,
+                distractor_explanation: "The story reveals he is, in fact, every human being throughout all of history."
+            },
+            {
+                question: "Why was the universe created according to the story?",
+                options: ["As a punishment", "As an egg for the protagonist to grow", "It was an accident", "To trap souls"],
+                answer: 1,
+                distractor_explanation: "The universe is described as an egg, an incubator for the protagonist's soul to mature."
+            },
+            {
+                question: "What happens when 'you' hurt someone?",
+                options: ["You gain karma", "You hurt yourself", "Nothing happens", "God gets angry"],
+                answer: 1,
+                distractor_explanation: "Since you are everyone, every act of violence is self-inflicted."
+            }
+        ],
+        the_gravity_shift: "Imagine playing a multiplayer video game, but realizing you are actually controlling every single character on the server, just taking turns one life at a time. That's The Egg."
+    },
 
-// Quantum Computers: https://youtu.be/JhHMJCUmq28
-"JhHMJCUmq28": {
-    summary: "Quantum computers use the principles of quantum mechanics — specifically superposition and entanglement — to solve certain complex problems exponentially faster than classical computers. While classical bits are 0 or 1, Qubits can be in a state of superposition (both 0 and 1) until measured.",
+    // Quantum Computers: https://youtu.be/JhHMJCUmq28
+    "JhHMJCUmq28": {
+        summary: "Quantum computers use the principles of quantum mechanics — specifically superposition and entanglement — to solve certain complex problems exponentially faster than classical computers. While classical bits are 0 or 1, Qubits can be in a state of superposition (both 0 and 1) until measured.",
         knowledge_graph: [
             { term: "Qubit", group: 1, definition: "The basic unit of quantum information, capable of existing in superposition" },
             { term: "Superposition", group: 1, definition: "A state where a qubit represents both 0 and 1 simultaneously with certain probabilities" },
@@ -351,36 +350,36 @@ const MOCK_DATA = {
             { term: "Database Search", group: 2, definition: "Quantum computers can search unsorted databases in square root time (Grover's algorithm)" },
             { term: "Encryption", group: 2, definition: "Quantum computers could break current security (RSA) by factoring large numbers (Shor's algorithm)" }
         ],
-            interactive_timeline: [
-                { timestamp: 0, label: "Bits vs Qubits", deep_dive: "A classical bit is a switch (on/off). A qubit is like a spinning coin (heads/tails/in-between)." },
-                { timestamp: 120, label: "Superposition", deep_dive: "Before you look, the qubit is in a mixed probability state. Measurement forces it to collapse." },
-                { timestamp: 240, label: "Entanglement", deep_dive: "Einstein called this 'spooky action at a distance'. It allows instant correlation between qubits." },
-                { timestamp: 360, label: "Quantum Parallelism", deep_dive: "With 4 bits, you have 1 of 16 states. With 4 qubits, you can manipulate all 16 states at once." },
-                { timestamp: 480, label: "What are they good for?", deep_dive: "They aren't faster at everything — just specific tasks like database searching and molecular simulation." },
-                { timestamp: 600, label: "Encryption Threat", deep_dive: "Current internet security relies on the difficulty of factoring primes; quantum computers could solve this easily." }
-            ],
-                quiz_bank: [
-                    {
-                        question: "What is the fundamental unit of a quantum computer?",
-                        options: ["Byte", "Bit", "Qubit", "Pixel"],
-                        answer: 2,
-                        distractor_explanation: "A Qubit (Quantum Bit) is the basic unit, capable of superposition."
-                    },
-                    {
-                        question: "What is Superposition?",
-                        options: ["Can be 0 and 1 at the same time", "Being in two places", "Moving faster than light", "Zero gravity"],
-                        answer: 0,
-                        distractor_explanation: "Superposition allows a qubit to exist in a probability state of both 0 and 1."
-                    },
-                    {
-                        question: "Are quantum computers faster at everything?",
-                        options: ["Yes, much faster", "No, only specific types of problems", "They are slower", "Same speed"],
-                        answer: 1,
-                        distractor_explanation: "They are only faster for specific algorithms (like factoring or search), not general browsing or gaming."
-                    }
-                ],
-                    the_gravity_shift: "A classical computer solves a maze by trying one path, hitting a wall, and starting over. A quantum computer tries EVERY path simultaneously and instantly reveals the exit."
-}
+        interactive_timeline: [
+            { timestamp: 0, label: "Bits vs Qubits", deep_dive: "A classical bit is a switch (on/off). A qubit is like a spinning coin (heads/tails/in-between)." },
+            { timestamp: 120, label: "Superposition", deep_dive: "Before you look, the qubit is in a mixed probability state. Measurement forces it to collapse." },
+            { timestamp: 240, label: "Entanglement", deep_dive: "Einstein called this 'spooky action at a distance'. It allows instant correlation between qubits." },
+            { timestamp: 360, label: "Quantum Parallelism", deep_dive: "With 4 bits, you have 1 of 16 states. With 4 qubits, you can manipulate all 16 states at once." },
+            { timestamp: 480, label: "What are they good for?", deep_dive: "They aren't faster at everything — just specific tasks like database searching and molecular simulation." },
+            { timestamp: 600, label: "Encryption Threat", deep_dive: "Current internet security relies on the difficulty of factoring primes; quantum computers could solve this easily." }
+        ],
+        quiz_bank: [
+            {
+                question: "What is the fundamental unit of a quantum computer?",
+                options: ["Byte", "Bit", "Qubit", "Pixel"],
+                answer: 2,
+                distractor_explanation: "A Qubit (Quantum Bit) is the basic unit, capable of superposition."
+            },
+            {
+                question: "What is Superposition?",
+                options: ["Can be 0 and 1 at the same time", "Being in two places", "Moving faster than light", "Zero gravity"],
+                answer: 0,
+                distractor_explanation: "Superposition allows a qubit to exist in a probability state of both 0 and 1."
+            },
+            {
+                question: "Are quantum computers faster at everything?",
+                options: ["Yes, much faster", "No, only specific types of problems", "They are slower", "Same speed"],
+                answer: 1,
+                distractor_explanation: "They are only faster for specific algorithms (like factoring or search), not general browsing or gaming."
+            }
+        ],
+        the_gravity_shift: "A classical computer solves a maze by trying one path, hitting a wall, and starting over. A quantum computer tries EVERY path simultaneously and instantly reveals the exit."
+    }
 };
 
 module.exports = MOCK_DATA;
