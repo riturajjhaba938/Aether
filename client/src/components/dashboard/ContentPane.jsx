@@ -139,41 +139,57 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
             </div>
 
             {/* Control Bar */}
-            <div className="glass p-2 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col gap-2 sm:gap-3 relative z-50">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <button
-                            onClick={onClose}
-                            className="p-1.5 sm:p-2 -ml-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
-                            title="Close Video"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
+            <div className="glass p-2 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col gap-2 relative z-50">
+                {/* Row 1: Title + Close */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <button
+                        onClick={onClose}
+                        className="p-1.5 sm:p-2 -ml-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                        title="Close"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
 
-                        <div className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider flex-shrink-0 hidden sm:block">
-                            {source.type}
-                        </div>
-                        <h4 className="font-bold text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px]">{source.title}</h4>
+                    <div className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider flex-shrink-0">
+                        {source.type}
                     </div>
+                    <h4 className="font-bold text-xs sm:text-sm truncate flex-1">{source.title}</h4>
 
-                    <div className="flex items-center gap-1.5 sm:gap-2">
+                    {/* Buttons inline on desktop */}
+                    <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                         <button
                             onClick={() => setViewMode(viewMode === 'focus' ? 'split' : 'focus')}
-                            className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
-                            title={viewMode === 'focus' ? "Exit Zen Mode" : "Enter Zen Mode"}
+                            className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                         >
-                            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span className="hidden sm:inline">{viewMode === 'focus' ? 'Exit Zen' : 'Zen Mode'}</span>
+                            <Maximize2 className="w-4 h-4" />
+                            {viewMode === 'focus' ? 'Exit Zen' : 'Zen Mode'}
                         </button>
-
                         <button
                             onClick={() => setShowQuiz(!showQuiz)}
-                            className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                            className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                         >
-                            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span className="hidden sm:inline">{showQuiz ? 'Hide Quiz' : 'Quiz'}</span>
+                            <HelpCircle className="w-4 h-4" />
+                            {showQuiz ? 'Hide Quiz' : 'Quiz'}
                         </button>
                     </div>
+                </div>
+
+                {/* Row 2: Action buttons on mobile only */}
+                <div className="flex sm:hidden items-center gap-2">
+                    <button
+                        onClick={() => setViewMode(viewMode === 'focus' ? 'split' : 'focus')}
+                        className={`flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                    >
+                        <Maximize2 className="w-3.5 h-3.5" />
+                        {viewMode === 'focus' ? 'Exit Zen' : 'Zen'}
+                    </button>
+                    <button
+                        onClick={() => setShowQuiz(!showQuiz)}
+                        className={`flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                    >
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        {showQuiz ? 'Hide Quiz' : 'Quiz'}
+                    </button>
                 </div>
 
                 {/* AI Milestones Timeline */}

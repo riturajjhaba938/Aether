@@ -54,7 +54,7 @@ const Workspace = () => {
     return (
         <div className="h-screen pt-16 sm:pt-20 flex flex-col overflow-hidden">
             {/* Back Button */}
-            <div className="px-3 sm:px-4 pt-2 pb-1 flex-shrink-0 flex items-center justify-between">
+            <div className="px-3 sm:px-4 pt-2 pb-1 flex-shrink-0">
                 <button
                     onClick={() => navigate('/dashboard')}
                     className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
@@ -63,21 +63,11 @@ const Workspace = () => {
                     <span className="hidden sm:inline">Back to Library</span>
                     <span className="sm:hidden">Back</span>
                 </button>
-
-                {/* Mobile chat toggle (always visible on mobile, also visible in zen mode on desktop) */}
-                <button
-                    onClick={() => setShowChat(!showChat)}
-                    className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg transition-colors ${showChat ? 'bg-secondary/20 text-secondary' : 'bg-white/10 text-gray-400'
-                        } ${isFocusMode ? '' : 'md:hidden'}`}
-                >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>{showChat ? 'Hide AI' : 'AI Chat'}</span>
-                </button>
             </div>
 
-            <div className="flex-1 flex flex-col md:flex-row gap-2 sm:gap-4 p-2 sm:p-4 overflow-hidden relative">
+            <div className="flex-1 flex flex-col md:flex-row gap-2 sm:gap-4 p-2 sm:p-4 overflow-auto md:overflow-hidden relative">
                 {/* Main Interactive Area */}
-                <div className={`${isFocusMode ? 'absolute inset-2 sm:inset-4 z-40' : 'flex-[2]'} flex flex-col gap-2 sm:gap-4 overflow-hidden transition-all duration-300`}>
+                <div className={`${isFocusMode ? 'absolute inset-2 sm:inset-4 z-40' : 'flex-[2] min-h-[300px]'} flex flex-col gap-2 sm:gap-4 overflow-hidden transition-all duration-300`}>
                     <div className="flex-1 min-h-0" style={{ minHeight: '250px' }}>
                         <ContentPane
                             source={source}
@@ -95,26 +85,28 @@ const Workspace = () => {
                 </div>
 
                 {/* Sidebar: AI Chat */}
-                {showChat && (
-                    <div className={`${isFocusMode
-                            ? 'absolute right-2 sm:right-8 bottom-2 sm:bottom-8 w-[calc(100%-1rem)] sm:w-96 h-[60vh] sm:h-[500px] z-50 glass shadow-2xl rounded-2xl sm:rounded-3xl border border-white/10'
-                            : 'flex-1 min-h-[200px] md:min-h-0'
-                        } flex flex-col overflow-hidden transition-all duration-300`}>
-                        {/* Close button in Zen mode */}
-                        {isFocusMode && (
-                            <button
-                                onClick={() => setShowChat(false)}
-                                className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-white/10 hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"
-                                title="Close AI Assistant"
-                            >
-                                <X className="w-4 h-4" />
-                            </button>
-                        )}
+                {/* Chat: always visible below on mobile, sidebar on desktop, floating in Zen */}
+                {!isFocusMode && (
+                    <div className="flex-1 min-h-[250px] md:min-h-0">
                         <ChatPane source={source} />
                     </div>
                 )}
 
-                {/* Floating re-open button when chat is hidden in Zen mode */}
+                {/* Zen mode: floating chat panel */}
+                {isFocusMode && showChat && (
+                    <div className="absolute right-2 sm:right-8 bottom-2 sm:bottom-8 w-[calc(100%-1rem)] sm:w-96 h-[60vh] sm:h-[500px] z-50 glass shadow-2xl rounded-2xl sm:rounded-3xl border border-white/10 flex flex-col overflow-hidden">
+                        <button
+                            onClick={() => setShowChat(false)}
+                            className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-white/10 hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"
+                            title="Close AI Assistant"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                        <ChatPane source={source} />
+                    </div>
+                )}
+
+                {/* Floating re-open button in Zen mode only */}
                 {isFocusMode && !showChat && (
                     <button
                         onClick={() => setShowChat(true)}
