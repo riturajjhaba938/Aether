@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import ReactPlayer from 'react-player';
-import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import ReactPlayer from 'react-player/lazy';
+import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } => 'framer-motion';
 import ConceptGame from './ConceptGame';
 
 const extractVideoId = (url) => {
-    if (!url) return '';
+    if (!url) return null;
     try {
         const urlObj = new URL(url);
         if (urlObj.hostname === 'youtu.be') return urlObj.pathname.slice(1);
@@ -16,7 +16,6 @@ const extractVideoId = (url) => {
 
     // Fallback logic
     const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0] || url;
-    console.log('[ContentPane] Extracted Video ID:', id, 'from:', url);
     return id;
 };
 
@@ -24,9 +23,16 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const playerRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [videoError, setVideoError] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showGame, setShowGame] = useState(false);
+
+    // Reset error when source changes
+    useEffect(() => {
+        setVideoError(false);
+        setPlaying(false);
+    }, [source]);
 
     // Handle external seek requests
     const seekTo = (seconds) => {
@@ -50,34 +56,48 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
     const aiData = source.aiData || {};
     const milestones = aiData.interactive_timeline || source.milestones || [];
     const quiz = aiData.quiz_bank || source.quiz || [];
+    const videoId = extractVideoId(source.url);
 
     return (
         <div className="h-full flex flex-col gap-4 relative">
             <div className="flex-1 glass rounded-2xl sm:rounded-[32px] overflow-hidden relative group font-sans flex flex-col">
                 {source.type === 'video' ? (
                     <div className="flex-1 bg-black relative min-h-0" style={{ minHeight: '300px' }}>
-                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                            <ReactPlayer
-                                ref={playerRef}
-                                url={`https://www.youtube.com/watch?v=${extractVideoId(source.url)}`}
-                                width="100%"
-                                height="100%"
-                                playing={playing}
-                                controls={true}
-                                onReady={() => setPlaying(true)}
-                                onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
-                                onError={(e) => console.error('ReactPlayer Error:', e)}
-                                config={{
-                                    youtube: {
-                                        playerVars: {
-                                            showinfo: 0,
-                                            modestbranding: 1,
-                                            origin: window.location.origin
+                        {videoError ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-red-900/20">
+                                <AlertCircle className="w-12 h-12 text-red-500 mb-2" />
+                                <h3 className="text-lg font-bold text-red-400">Video Playback Failed</h3>
+                                <p className="text-sm text-gray-400 max-w-xs">Could not load video. The URL might be invalid or restricted.</p>
+                                <p className="text-xs text-gray-500 mt-2 font-mono">{source.url}</p>
+                            </div>
+                        ) : (
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                                <ReactPlayer
+                                    ref={playerRef}
+                                    url={`https://www.youtube.com/watch?v=${videoId}`}
+                                    width="100%"
+                                    height="100%"
+                                    playing={playing}
+                                    controls={true}
+                                    muted={true} // Auto-play often requires mute
+                                    onReady={() => setPlaying(true)}
+                                    onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
+                                    onError={(e) => {
+                                        console.error('ReactPlayer Error:', e);
+                                        setVideoError(true);
+                                    }}
+                                    config={{
+                                        youtube: {
+                                            playerVars: {
+                                                showinfo: 0,
+                                                modestbranding: 1,
+                                                origin: window.location.origin
+                                            }
                                         }
-                                    }
-                                }}
-                            />
-                        </div>
+                                    }}
+                                />
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="flex-1 bg-white/5 flex flex-col relative overflow-hidden">
