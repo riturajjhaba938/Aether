@@ -408,6 +408,80 @@ const MOCK_DATA = {
             }
         ],
         the_gravity_shift: "A classical computer solves a maze by trying one path, hitting a wall, and starting over. A quantum computer tries EVERY path simultaneously and instantly reveals the exit."
+    },
+
+    // PDF Demo: The Nature of Space and Time
+    "demo://nature-of-space-time": {
+        summary: "This seminal work by Stephen Hawking and Roger Penrose explores the fundamental nature of the universe. It debates the roles of General Relativity and Quantum Mechanics in understanding singularities, the arrow of time, and the possible origins of the cosmos at the Big Bang.",
+        knowledge_graph: [
+            { term: "General Relativity", group: 1, definition: "Einstein's theory of gravity, describing it as curvature of spacetime" },
+            { term: "Quantum Mechanics", group: 1, definition: "Study of particles at the smallest scales where behavior is probabilistic" },
+            { term: "Singularity", group: 1, definition: "A point of infinite density and zero volume, like at the center of a black hole" },
+            { term: "Event Horizon", group: 2, definition: "The point of no return around a black hole from which nothing can escape" },
+            { term: "Hawking Radiation", group: 2, definition: "Black-body radiation predicted to be released by black holes due to quantum effects" },
+            { term: "Entropic Arrow", group: 2, definition: "The direction of time defined by the second law of thermodynamics (increasing disorder)" },
+            { term: "Space-time", group: 1, definition: "The 4D fabric of the universe combining three dimensions of space and one of time" }
+        ],
+        interactive_timeline: [
+            { timestamp: 0, label: "The Conflict", deep_dive: "Relativity works for the large; Quantum works for the small. They don't yet talk to each other." },
+            { timestamp: 1, label: "Singularities", deep_dive: "Penrose proved that singularities are inevitable once a star collapses beyond a certain point." },
+            { timestamp: 2, label: "Black Hole Thermodynamics", deep_dive: "Hawking realized black holes have a temperature and entropy, suggesting they aren't 'forever'." },
+            { timestamp: 3, label: "Big Bang Origin", deep_dive: "The universe likely started from a quantum singularity, requiring a unified theory to explain." }
+        ],
+        quiz_bank: [
+            {
+                question: "What does General Relativity describe gravity as?",
+                options: ["A force between masses", "Curvature of spacetime", "Magnetic waves", "Particle exchange"],
+                answer: 1,
+                distractor_explanation: "Relativity treats gravity as the shape of space itself, not a traditional force.",
+                timestamp: 0
+            },
+            {
+                question: "What happens at a Singularity?",
+                options: ["Density becomes infinite", "Gravity reaches zero", "Time stops completely", "Light moves backward"],
+                answer: 0,
+                distractor_explanation: "A singularity is mathematically a point where density becomes infinite and laws of physics break down.",
+                timestamp: 1
+            }
+        ],
+        the_gravity_shift: "The universe is like a balloon being inflated. Singularities are the points (like the beginning) where the rubber of the balloon is stretched so much it becomes infinitely thin — that's where our math stops working."
+    },
+
+    // PDF Demo: Deep Learning Mastery
+    "demo://deep-learning-notes": {
+        summary: "Comprehensive notes on Deep Learning architectures. It covers Convolutional Neural Networks (CNNs) for vision, Recurrent Neural Networks (RNNs) for sequence data, and the modern Transformer architecture that powers LLMs like GPT.",
+        knowledge_graph: [
+            { term: "Convolutional Neural Network", group: 1, definition: "CNN - Specialized network for processing image data using spatial hierarchies" },
+            { term: "Recurrent Neural Network", group: 1, definition: "RNN - Network with loops used for sequential data like text or audio" },
+            { term: "Transformer", group: 1, definition: "Modern architecture using 'Self-Attention' to process entire sequences in parallel" },
+            { term: "Backpropagation", group: 2, definition: "Primary algorithm for training networks by calculating error gradients" },
+            { term: "Overfitting", group: 2, definition: "When a model learns training data too well but fails on new, unseen data" },
+            { term: "Attention Mechanism", group: 2, definition: "Technique allowing a model to focus on the most relevant parts of the input" },
+            { term: "Hyperparameter", group: 2, definition: "Configuration settings like learning rate that aren't learned during training" }
+        ],
+        interactive_timeline: [
+            { timestamp: 0, label: "The Shift to Vision", deep_dive: "AlexNet (2012) proved that deep CNNs could outperform humans in image classification." },
+            { timestamp: 1, label: "Sequential Learning", deep_dive: "LSTMs (Long Short-Term Memory) solved the vanishing gradient problem in traditional RNNs." },
+            { timestamp: 2, label: "Attention is All You Need", deep_dive: "The 2017 paper introduced Transformers, which completely replaced RNNs in natural language processing." },
+            { timestamp: 3, label: "Generative AI", deep_dive: "Scaling Transformers to billions of parameters led to the emergence of reasoning in models like GPT-4." }
+        ],
+        quiz_bank: [
+            {
+                question: "Which architecture is best for image recognition?",
+                options: ["RNN", "Vanilla Perceptron", "CNN", "Linear Regression"],
+                answer: 2,
+                distractor_explanation: "CNNs are designed to recognize spatial patterns, making them ideal for pixel data.",
+                timestamp: 0
+            },
+            {
+                question: "What is the core innovation of the Transformer?",
+                options: ["Convolution", "LSTMs", "Self-Attention", "Recursion"],
+                answer: 2,
+                distractor_explanation: "Self-attention allows transformers to weigh the importance of different words in a sentence simultaneously.",
+                timestamp: 2
+            }
+        ],
+        the_gravity_shift: "Deep Learning is building a pyramid of understand. The bottom layer sees 'lines', the middle layer sees 'eyes', and the top layer sees 'a face'. The AI doesn't know it's a face — it just knows the pyramid's math checks out."
     }
 };
 

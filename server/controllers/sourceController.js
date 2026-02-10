@@ -66,19 +66,20 @@ exports.addSource = async (req, res) => {
 
         // Try AI synthesis, fall back to mock data if available
         let aiAnalysis;
+        const mockKey = videoId || url;
 
-        // Check for mock data first (instant, no API needed) - primarily for video
-        if (videoId && MOCK_DATA[videoId]) {
-            console.log(`[Aether AI] Using pre-built data for video: ${videoId}`);
-            aiAnalysis = MOCK_DATA[videoId];
+        // Check for mock data first (instant, no API needed)
+        if (mockKey && MOCK_DATA[mockKey]) {
+            console.log(`[Aether AI] Using pre-built data for: ${mockKey}`);
+            aiAnalysis = MOCK_DATA[mockKey];
         } else {
             // Try live API
             aiAnalysis = await generateAetherContent(content);
 
             // If API failed and returned error, check mock as backup
-            if (aiAnalysis.summary === "AI Synthesis Failed. Please try again." && videoId && MOCK_DATA[videoId]) {
-                console.log(`[Aether AI] API failed, falling back to mock data for: ${videoId}`);
-                aiAnalysis = MOCK_DATA[videoId];
+            if (aiAnalysis.summary === "AI Synthesis Failed. Please try again." && mockKey && MOCK_DATA[mockKey]) {
+                console.log(`[Aether AI] API failed, falling back to mock data for: ${mockKey}`);
+                aiAnalysis = MOCK_DATA[mockKey];
             }
         }
 

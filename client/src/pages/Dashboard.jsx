@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Video, FileText, Play, X, Loader, Brain, BookOpen, Network, Sparkles, CheckCircle, Zap, Upload, File } from 'lucide-react';
+import { Plus, Video, FileText, Play, X, Loader, Brain, BookOpen, Network, Sparkles, CheckCircle, Zap, Upload } from 'lucide-react';
 import axios from 'axios';
 
 // Synthesis step messages that cycle during loading
@@ -51,7 +51,6 @@ const Dashboard = () => {
             try {
                 const { data } = await axios.get(`/sources/${userId}`);
                 setSources(data);
-                // Auto-launch most recent source if returning to dashboard
                 if (data.length > 0 && !loading) {
                     navigate(`/workspace/${data[0]._id}`);
                 }
@@ -71,20 +70,19 @@ const Dashboard = () => {
             return;
         }
 
-        // Set initial fun fact
         setFunFact(FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)]);
 
         const stepInterval = setInterval(() => {
             setSynthStep(prev => {
                 const next = prev + 1;
-                if (next >= SYNTHESIS_STEPS.length) return SYNTHESIS_STEPS.length - 1; // Stay on last
+                if (next >= SYNTHESIS_STEPS.length) return SYNTHESIS_STEPS.length - 1;
                 return next;
             });
-        }, 4000); // Advance every 4 seconds
+        }, 4000);
 
         const factInterval = setInterval(() => {
             setFunFact(FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)]);
-        }, 8000); // Change fact every 8 seconds
+        }, 8000);
 
         return () => {
             clearInterval(stepInterval);
@@ -96,7 +94,6 @@ const Dashboard = () => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setSelectedFile(file);
-            // Auto-fill title if empty
             if (!newSource.title) {
                 setNewSource(prev => ({ ...prev, title: file.name.replace('.pdf', '') }));
             }
@@ -104,7 +101,7 @@ const Dashboard = () => {
     };
 
     const handleAddSource = async (e) => {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
         setAdding(true);
         setSynthStep(0);
 
@@ -185,7 +182,7 @@ const Dashboard = () => {
                         <button
                             onClick={() => {
                                 setNewSource({ title: "Neural Networks (3Blue1Brown)", url: "https://www.youtube.com/watch?v=aircAruvnKk", type: 'video' });
-                                handleAddSource({ preventDefault: () => { } });
+                                handleAddSource();
                             }}
                             className="flex-1 bg-primary text-black font-bold px-8 py-4 rounded-2xl hover:bg-primary/80 transition-all hover:scale-105 flex items-center justify-center gap-3"
                         >
@@ -224,7 +221,6 @@ const Dashboard = () => {
                 </div>
             )}
 
-            {/* Add Source Modal */}
             <AnimatePresence>
                 {showAddModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -234,7 +230,6 @@ const Dashboard = () => {
                             exit={{ opacity: 0, scale: 0.9 }}
                             className="bg-[#1a1a1a] border border-white/10 p-6 rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden scanline"
                         >
-                            {/* Normal form state */}
                             {!adding ? (
                                 <>
                                     <div className="flex justify-between items-center mb-6">
@@ -247,19 +242,16 @@ const Dashboard = () => {
                                         </button>
                                     </div>
 
-                                    {/* Type Selector Tabs */}
                                     <div className="flex bg-white/5 p-1 rounded-xl mb-6">
                                         <button
                                             onClick={() => setNewSource({ ...newSource, type: 'video' })}
-                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'video' ? 'bg-primary text-black' : 'text-gray-400 hover:text-white'
-                                                }`}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'video' ? 'bg-primary text-black' : 'text-gray-400 hover:text-white'}`}
                                         >
                                             <Video size={16} /> YouTube Video
                                         </button>
                                         <button
                                             onClick={() => setNewSource({ ...newSource, type: 'pdf' })}
-                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'pdf' ? 'bg-blue-500 text-white' : 'text-gray-400 hover:text-white'
-                                                }`}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'pdf' ? 'bg-blue-500 text-white' : 'text-gray-400 hover:text-white'}`}
                                         >
                                             <FileText size={16} /> PDF Document
                                         </button>
@@ -321,7 +313,7 @@ const Dashboard = () => {
                                                         accept=".pdf"
                                                         onChange={handleFileChange}
                                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                                        required
+                                                        required={!selectedFile}
                                                     />
                                                     {selectedFile ? (
                                                         <div className="flex flex-col items-center text-blue-400">
@@ -336,6 +328,28 @@ const Dashboard = () => {
                                                             <span className="text-xs">Max 10MB</span>
                                                         </div>
                                                     )}
+                                                </div>
+
+                                                <div className="mt-4">
+                                                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2 font-bold">Try a Demo Document</p>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {[
+                                                            { title: "The Nature of Space and Time", url: "demo://nature-of-space-time" },
+                                                            { title: "Deep Learning Mastery", url: "demo://deep-learning-notes" }
+                                                        ].map((demo, i) => (
+                                                            <button
+                                                                key={i}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setNewSource({ ...newSource, title: demo.title, url: demo.url, type: 'pdf' });
+                                                                    setSelectedFile({ name: demo.title + '.pdf', size: 0 });
+                                                                }}
+                                                                className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-full transition-colors text-gray-400 hover:text-blue-400"
+                                                            >
+                                                                {demo.title}
+                                                            </button>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -352,9 +366,7 @@ const Dashboard = () => {
                                     </form>
                                 </>
                             ) : (
-                                /* Animated Synthesis Loading Experience */
                                 <div className="py-4">
-                                    {/* Animated brain icon */}
                                     <div className="flex justify-center mb-6">
                                         <motion.div
                                             animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
@@ -362,7 +374,6 @@ const Dashboard = () => {
                                             className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center relative animate-glow animate-pulse-slow"
                                         >
                                             <StepIcon className="w-8 h-8 text-primary" />
-                                            {/* Orbiting dot */}
                                             <motion.div
                                                 animate={{ rotate: 360 }}
                                                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -373,7 +384,6 @@ const Dashboard = () => {
                                         </motion.div>
                                     </div>
 
-                                    {/* Current step label */}
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={synthStep}
@@ -387,10 +397,8 @@ const Dashboard = () => {
                                         </motion.div>
                                     </AnimatePresence>
 
-                                    {/* Progress Steps */}
                                     <div className="space-y-2 mb-6">
                                         {SYNTHESIS_STEPS.map((step, i) => {
-                                            const Icon = step.icon;
                                             const isDone = i < synthStep;
                                             const isCurrent = i === synthStep;
 
@@ -400,10 +408,7 @@ const Dashboard = () => {
                                                     initial={{ opacity: 0, x: -10 }}
                                                     animate={{ opacity: 1, x: 0 }}
                                                     transition={{ delay: i * 0.1 }}
-                                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs transition-all ${isDone ? 'bg-primary/10 text-primary' :
-                                                        isCurrent ? 'bg-white/10 text-white' :
-                                                            'text-gray-600'
-                                                        }`}
+                                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs transition-all ${isDone ? 'bg-primary/10 text-primary' : isCurrent ? 'bg-white/10 text-white' : 'text-gray-600'}`}
                                                 >
                                                     {isDone ? (
                                                         <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
@@ -418,7 +423,6 @@ const Dashboard = () => {
                                         })}
                                     </div>
 
-                                    {/* Fun Fact */}
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={funFact}
