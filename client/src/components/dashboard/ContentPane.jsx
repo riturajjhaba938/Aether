@@ -76,11 +76,23 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex-1 bg-white/5 flex items-center justify-center text-gray-500">
-                        <div className="text-center">
-                            <FileText className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p className="text-sm font-mono">PDF Viewer Implementation Pending</p>
-                            <p className="text-xs text-gray-500 mt-2">{source.title}</p>
+                    <div className="flex-1 bg-white/5 flex flex-col relative overflow-hidden">
+                        <div className="p-4 border-b border-white/5 bg-black/20 flex justify-between items-center">
+                            <div className="flex items-center gap-2 text-gray-400">
+                                <FileText className="w-5 h-5 text-blue-400" />
+                                <span className="text-sm font-medium">PDF Document Viewer</span>
+                            </div>
+                            <span className="text-xs text-gray-500 uppercase tracking-wider">Read Only</span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-6 sm:p-10 font-serif text-gray-300 leading-relaxed text-lg max-w-4xl mx-auto w-full scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                            {source.content ? (
+                                <div className="whitespace-pre-wrap">{source.content}</div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
+                                    <FileText className="w-16 h-16 mb-4" />
+                                    <p>No text content available.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

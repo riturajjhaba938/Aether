@@ -23,9 +23,12 @@ const extractVideoId = (url) => {
 
 exports.addSource = async (req, res) => {
     try {
+        // req.body fields come as strings in multipart/form-data
         const { title, type, url, userId } = req.body;
         let content = '';
         let videoId = null;
+
+        console.log(`[Add Source] Processing request: Type=${type}, User=${userId}`);
 
         if (type === 'video') {
             videoId = extractVideoId(url);
@@ -38,14 +41,34 @@ exports.addSource = async (req, res) => {
                 console.error("Transcript Error:", err.message);
                 content = "Transcript unavailable. AI analysis will be limited.";
             }
+
         } else if (type === 'pdf') {
-            content = req.body.content || 'PDF Content Placeholder';
+            if (req.file) {
+                console.log(`[PDF Upload] received file: ${req.file.originalname} (${req.file.size} bytes)`);
+                try {
+                    const data = await pdf(req.file.buffer);
+                    content = data.text;
+                    // Clean up excessive whitespace often found in PDFs
+                    content = content.replace(/\s+/g, ' ').trim();
+                    console.log(`[PDF Parse] Extracted ${content.length} characters.`);
+
+                    // Fallback title if user didn't provide one
+                    if (!title) {
+                        req.body.title = req.file.originalname.replace('.pdf', '');
+                    }
+                } catch (err) {
+                    console.error("PDF Parse Error:", err);
+                    return res.status(400).json({ message: "Failed to parse PDF file." });
+                }
+            } else {
+                return res.status(400).json({ message: "No PDF file uploaded." });
+            }
         }
 
         // Try AI synthesis, fall back to mock data if available
         let aiAnalysis;
 
-        // Check for mock data first (instant, no API needed)
+        // Check for mock data first (instant, no API needed) - primarily for video
         if (videoId && MOCK_DATA[videoId]) {
             console.log(`[Aether AI] Using pre-built data for video: ${videoId}`);
             aiAnalysis = MOCK_DATA[videoId];
@@ -62,22 +85,23 @@ exports.addSource = async (req, res) => {
 
         const source = await StudySource.create({
             userId,
-            title,
+            title: req.body.title || title, // Ensure title is set
             type,
-            url,
+            url: url || `pdf://${req.file?.originalname}`, // Use fake URL schema for PDFs
             content,
             aiData: aiAnalysis
         });
 
         res.status(201).json(source);
     } catch (error) {
+        console.error("Add Source Error:", error);
         res.status(500).json({ message: error.message });
     }
 };
 
 exports.getSources = async (req, res) => {
     try {
-        const sources = await StudySource.find({ userId: req.params.userId });
+        const sources = await StudySource.find({ userId: req.params.userId }).sort({ createdAt: -1 });
         res.json(sources);
     } catch (error) {
         res.status(500).json({ message: error.message });

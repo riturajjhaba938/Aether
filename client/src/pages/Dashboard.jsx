@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Video, FileText, Play, X, Loader, Brain, BookOpen, Network, Sparkles, CheckCircle, Zap } from 'lucide-react';
+import { Plus, Video, FileText, Play, X, Loader, Brain, BookOpen, Network, Sparkles, CheckCircle, Zap, Upload, File } from 'lucide-react';
 import axios from 'axios';
 
 // Synthesis step messages that cycle during loading
 const SYNTHESIS_STEPS = [
-    { icon: Video, label: 'Fetching video transcript...', tip: 'Extracting spoken content from the video' },
-    { icon: Brain, label: 'AI is reading your content...', tip: 'Understanding key topics and concepts' },
-    { icon: BookOpen, label: 'Generating summary...', tip: 'Condensing hours of content into key points' },
+    { icon: Video, label: 'Fetching content...', tip: 'Reading your source material' },
+    { icon: Brain, label: 'AI is analyzing...', tip: 'Understanding key topics and concepts' },
+    { icon: BookOpen, label: 'Generating summary...', tip: 'Condensing content into key points' },
     { icon: Network, label: 'Building Neuron Map...', tip: 'Mapping connections between concepts' },
     { icon: Sparkles, label: 'Creating quiz questions...', tip: 'Crafting personalized practice problems' },
     { icon: Zap, label: 'Finalizing your study session...', tip: 'Almost there! Polishing everything up' },
@@ -29,7 +29,11 @@ const Dashboard = () => {
     const [sources, setSources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
+
+    // Unified state for both Video and PDF
     const [newSource, setNewSource] = useState({ title: '', url: '', type: 'video' });
+    const [selectedFile, setSelectedFile] = useState(null);
+
     const [adding, setAdding] = useState(false);
     const [synthStep, setSynthStep] = useState(0);
     const [funFact, setFunFact] = useState('');
@@ -84,21 +88,59 @@ const Dashboard = () => {
         };
     }, [adding]);
 
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedFile(file);
+            // Auto-fill title if empty
+            if (!newSource.title) {
+                setNewSource(prev => ({ ...prev, title: file.name.replace('.pdf', '') }));
+            }
+        }
+    };
+
     const handleAddSource = async (e) => {
         e.preventDefault();
         setAdding(true);
         setSynthStep(0);
+
         try {
-            const { data } = await axios.post('/api/sources', {
-                ...newSource,
-                userId
-            });
-            setSources([...sources, data]);
+            let responseData;
+
+            if (newSource.type === 'video') {
+                // JSON upload for Video
+                const { data } = await axios.post('/api/sources', {
+                    ...newSource,
+                    userId
+                });
+                responseData = data;
+            } else {
+                // FormData upload for PDF
+                if (!selectedFile) {
+                    alert("Please select a PDF file.");
+                    setAdding(false);
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('userId', userId);
+                formData.append('type', 'pdf');
+                formData.append('title', newSource.title);
+
+                const { data } = await axios.post('/api/sources', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                responseData = data;
+            }
+
+            setSources([...sources, responseData]);
             setShowAddModal(false);
             setNewSource({ title: '', url: '', type: 'video' });
+            setSelectedFile(null);
         } catch (error) {
             console.error("Failed to add source:", error);
-            alert("Failed to add source. Please check the URL.");
+            alert(`Failed to add source: ${error.response?.data?.message || error.message}`);
         } finally {
             setAdding(false);
         }
@@ -134,7 +176,7 @@ const Dashboard = () => {
                         <Play className="w-8 h-8 text-primary" />
                     </div>
                     <h3 className="text-xl font-bold mb-2">No Sources Yet</h3>
-                    <p className="text-gray-400 max-w-sm">Click "Add New Source" to paste a YouTube URL and let Aether synthesize your first study session.</p>
+                    <p className="text-gray-400 max-w-sm">Click "Add New Source" to add a video or PDF and let Aether synthesize your first study session.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -190,35 +232,82 @@ const Dashboard = () => {
                                         </button>
                                     </div>
 
+                                    {/* Type Selector Tabs */}
+                                    <div className="flex bg-white/5 p-1 rounded-xl mb-6">
+                                        <button
+                                            onClick={() => setNewSource({ ...newSource, type: 'video' })}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'video' ? 'bg-primary text-black' : 'text-gray-400 hover:text-white'
+                                                }`}
+                                        >
+                                            <Video size={16} /> YouTube Video
+                                        </button>
+                                        <button
+                                            onClick={() => setNewSource({ ...newSource, type: 'pdf' })}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${newSource.type === 'pdf' ? 'bg-blue-500 text-white' : 'text-gray-400 hover:text-white'
+                                                }`}
+                                        >
+                                            <FileText size={16} /> PDF Document
+                                        </button>
+                                    </div>
+
                                     <form onSubmit={handleAddSource} className="space-y-4">
                                         <div>
                                             <label className="block text-xs font-medium text-gray-400 mb-1">Title</label>
                                             <input
                                                 type="text"
                                                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary outline-none text-white"
-                                                placeholder="e.g., Intro to Neural Networks"
+                                                placeholder={newSource.type === 'video' ? "e.g., Intro to Neural Networks" : "e.g., Research Paper Name"}
                                                 value={newSource.title}
                                                 onChange={e => setNewSource({ ...newSource, title: e.target.value })}
                                                 required
                                             />
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-400 mb-1">YouTube URL</label>
-                                            <input
-                                                type="url"
-                                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary outline-none text-white"
-                                                placeholder="https://youtube.com/watch?v=..."
-                                                value={newSource.url}
-                                                onChange={e => setNewSource({ ...newSource, url: e.target.value })}
-                                                required
-                                            />
-                                        </div>
+
+                                        {newSource.type === 'video' ? (
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-400 mb-1">YouTube URL</label>
+                                                <input
+                                                    type="url"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-primary outline-none text-white"
+                                                    placeholder="https://youtube.com/watch?v=..."
+                                                    value={newSource.url}
+                                                    onChange={e => setNewSource({ ...newSource, url: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-400 mb-1">Upload PDF</label>
+                                                <div className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-primary/50 transition-colors group cursor-pointer relative">
+                                                    <input
+                                                        type="file"
+                                                        accept=".pdf"
+                                                        onChange={handleFileChange}
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                        required
+                                                    />
+                                                    {selectedFile ? (
+                                                        <div className="flex flex-col items-center text-blue-400">
+                                                            <FileText size={32} className="mb-2" />
+                                                            <span className="text-sm font-bold">{selectedFile.name}</span>
+                                                            <span className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center text-gray-500 group-hover:text-gray-300">
+                                                            <Upload size={32} className="mb-2" />
+                                                            <span className="text-sm font-bold">Click to Upload PDF</span>
+                                                            <span className="text-xs">Max 10MB</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
 
                                         <button
                                             type="submit"
                                             className="w-full bg-primary text-black font-bold py-3 rounded-xl mt-2 hover:bg-primary/90 transition-colors flex justify-center gap-2"
                                         >
-                                            Add to Library
+                                            {newSource.type === 'video' ? 'Add Video to Library' : 'Analyze PDF'}
                                         </button>
                                         <p className="text-[10px] text-gray-500 text-center">
                                             Aether will automatically generate a summary, quizzes, and a knowledge graph.
