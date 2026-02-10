@@ -60,13 +60,15 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose }) => {
                                 height="100%"
                                 playing={playing}
                                 controls={true}
+                                onReady={() => setPlaying(true)}
                                 onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
                                 onError={(e) => console.error('ReactPlayer Error:', e)}
                                 config={{
                                     youtube: {
                                         playerVars: {
                                             showinfo: 0,
-                                            modestbranding: 1
+                                            modestbranding: 1,
+                                            origin: window.location.origin
                                         }
                                     }
                                 }}
