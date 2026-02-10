@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import ReactPlayer from 'react-player';
+// Native iframe approach for maximum stability
 import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConceptGame from './ConceptGame';
@@ -19,6 +19,30 @@ const extractVideoId = (url) => {
     return id;
 };
 
+const formatNotesWithCitations = (text, onSeek) => {
+    if (!text) return null;
+    // Match [M:SS] or [MM:SS] or (M:SS) or M:SS
+    const parts = text.split(/(\[?\d{1,2}:\d{2}\]?)/g);
+    return parts.map((part, i) => {
+        const match = part.match(/\[?(\d{1,2}):(\d{2})\]?/);
+        if (match) {
+            const minutes = parseInt(match[1], 10);
+            const seconds = parseInt(match[2], 10);
+            const totalSeconds = minutes * 60 + seconds;
+            return (
+                <button
+                    key={i}
+                    onClick={() => onSeek(totalSeconds)}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-primary/20 text-primary hover:bg-primary hover:text-black rounded text-[0.9em] font-bold transition-all mx-0.5"
+                >
+                    <Play size={10} fill="currentColor" /> {match[1]}:{match[2]}
+                </button>
+            );
+        }
+        return part;
+    });
+};
+
 const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
     const playerRef = useRef(null);
     const [playing, setPlaying] = useState(false);
@@ -28,10 +52,6 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showGame, setShowGame] = useState(false);
 
-    // Debug logging
-    useEffect(() => {
-        console.log('[ContentPane] Current Source:', source);
-    }, [source]);
 
     // Reset error when source changes
     useEffect(() => {
@@ -39,20 +59,38 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
         setPlaying(false);
     }, [source]);
 
-    // Handle external seek requests
+    // Handle external seek requests using native postMessage to the iframe
     const seekTo = (seconds) => {
-        playerRef.current?.seekTo(seconds, 'seconds');
-        setPlaying(true);
+        const frame = document.getElementById('aether-player');
+        if (frame) {
+            frame.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'seekTo',
+                args: [seconds, true]
+            }), '*');
+            // Force play in case it was paused
+            frame.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'playVideo'
+            }), '*');
+            setPlaying(true);
+        }
     };
 
     if (!source) {
         return (
-            <div className="h-full glass rounded-[32px] flex flex-col items-center justify-center text-center p-10">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                    <Play className="w-8 h-8 text-primary" />
+            <div className="h-full glass rounded-[32px] flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
+                <div className="absolute inset-0 scanline opacity-20" />
+                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-8 relative animate-pulse-slow">
+                    <Brain className="w-10 h-10 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Ready to Learn?</h3>
-                <p className="text-gray-400 max-w-xs">Select a source from the sidebar or upload a new one to begin your Aetherial study session.</p>
+                <h3 className="text-3xl font-bold mb-4 tracking-tight">Synthesizing Aether...</h3>
+                <p className="text-gray-400 max-w-sm mb-8">Preparing your interactive study environment. Connecting neurons, mapping concepts, and generating insights.</p>
+                <div className="flex gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0s' }} />
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.2s' }} />
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.4s' }} />
+                </div>
             </div>
         );
     }
@@ -76,30 +114,14 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                 <p className="text-xs text-gray-500 mt-2 font-mono">{source.url || 'No URL provided'}</p>
                             </div>
                         ) : (
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                                <ReactPlayer
-                                    ref={playerRef}
-                                    url={`https://www.youtube.com/watch?v=${videoId}`}
-                                    width="100%"
-                                    height="100%"
-                                    playing={playing}
-                                    controls={true}
-                                    muted={true} // Auto-play often requires mute
-                                    onReady={() => setPlaying(true)}
-                                    onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
-                                    onError={(e) => {
-                                        console.error('ReactPlayer Error:', e);
-                                        setVideoError(true);
-                                    }}
-                                    config={{
-                                        youtube: {
-                                            playerVars: {
-                                                showinfo: 0,
-                                                modestbranding: 1,
-                                                origin: window.location.origin
-                                            }
-                                        }
-                                    }}
+                            <div className="absolute inset-0 z-10">
+                                <iframe
+                                    id="aether-player"
+                                    src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}&autoplay=1&mute=1&modestbranding=1&rel=0`}
+                                    className="w-full h-full border-none"
+                                    title={source.title}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
                                 />
                             </div>
                         )}
@@ -114,8 +136,8 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                             <span className="text-xs text-gray-500 uppercase tracking-wider">Read Only</span>
                         </div>
                         <div className="flex-1 overflow-y-auto p-6 sm:p-10 font-serif text-gray-300 leading-relaxed text-lg max-w-4xl mx-auto w-full scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                            {source.content ? (
-                                <div className="whitespace-pre-wrap">{source.content}</div>
+                            {source.content || aiData.summary ? (
+                                <div className="whitespace-pre-wrap">{formatNotesWithCitations(source.content || aiData.summary, seekTo)}</div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
                                     <FileText className="w-16 h-16 mb-4" />
@@ -169,18 +191,20 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                 {/* Contextual Link Button */}
                                                 <div className="flex justify-end items-center gap-2">
                                                     {q.distractor_explanation && selectedAnswer?.startsWith(`${i}-`) && (
-                                                        <span className="text-[10px] text-gray-400 italic mr-auto">{q.distractor_explanation.substring(0, 50)}...</span>
+                                                        <span className="text-[10px] text-gray-400 italic mr-auto line-clamp-1">{q.distractor_explanation}</span>
                                                     )}
-                                                    <button
-                                                        onClick={() => {
-                                                            seekTo(q.timestamp || 0);
-                                                            setPlaying(true);
-                                                        }}
-                                                        className="text-[10px] flex items-center gap-1 text-primary hover:underline hover:text-primary/80 transition-colors"
-                                                    >
-                                                        <Play className="w-3 h-3" />
-                                                        Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
-                                                    </button>
+                                                    {q.timestamp !== undefined && (
+                                                        <button
+                                                            onClick={() => {
+                                                                seekTo(q.timestamp || 0);
+                                                                setPlaying(true);
+                                                            }}
+                                                            className="text-[10px] flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all font-bold"
+                                                        >
+                                                            <Play className="w-3 h-3 fill-current" />
+                                                            Jump to Explanation ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -278,7 +302,7 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                             <button
                                 key={i}
                                 onClick={() => seekTo(m.timestamp)}
-                                className="flex-shrink-0 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full text-xs transition-all flex items-center gap-2 group"
+                                className="flex-shrink-0 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full text-xs transition-all flex items-center gap-2 group animate-pulse-slow"
                                 title={m.deep_dive || m.label}
                             >
                                 <div className="w-1.5 h-1.5 rounded-full bg-secondary group-hover:bg-primary transition-colors" />

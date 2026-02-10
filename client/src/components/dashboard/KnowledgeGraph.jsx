@@ -74,8 +74,21 @@ const KnowledgeGraph = ({ data }) => {
                 graphData={graphData}
                 backgroundColor="#02061700"
                 nodeLabel="id"
+                nodeThreeObject={node => {
+                    const color = node.group === 1 ? '#38BDF8' : '#A78BFA';
+                    const geometry = new THREE.SphereGeometry(node.group === 1 ? 8 : 5);
+                    const material = new THREE.MeshStandardMaterial({
+                        color,
+                        transparent: true,
+                        opacity: 0.9,
+                        emissive: color,
+                        emissiveIntensity: 0.5
+                    });
+                    return new THREE.Mesh(geometry, material);
+                }}
                 nodeColor={node => node.group === 1 ? '#38BDF8' : '#A78BFA'}
                 linkColor={() => '#ffffff22'}
+                linkWidth={1}
                 height={400}
                 showNavInfo={false}
             />

@@ -147,10 +147,10 @@ const ConceptGame = ({ source, onClose }) => {
                 <motion.div
                     initial={{ scale: 0.9, y: 20 }}
                     animate={{ scale: 1, y: 0 }}
-                    className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                    className="w-full max-w-2xl max-h-[90vh] glass rounded-3xl overflow-hidden flex flex-col border border-white/10"
                 >
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-4">
+                    {/* Header - Sticky */}
+                    <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-black/40 backdrop-blur-md z-10">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-primary/20 rounded-xl">
                                 <Zap className="w-5 h-5 text-primary" />
@@ -164,210 +164,220 @@ const ConceptGame = ({ source, onClose }) => {
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                            className="bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 px-4 py-2 rounded-xl transition-all flex items-center gap-2 font-bold text-xs"
                         >
-                            <X className="w-5 h-5" />
+                            <X className="w-4 h-4" />
+                            Close
                         </button>
                     </div>
 
-                    {/* Rules Screen */}
-                    {gameState === 'rules' && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="glass rounded-2xl p-5 sm:p-8"
-                        >
-                            <div className="text-center mb-6">
-                                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-4">
-                                    <Zap className="w-8 h-8 text-black" />
-                                </div>
-                                <h3 className="text-xl font-bold mb-2">How to Play</h3>
-                                <p className="text-sm text-gray-400">
-                                    Match concepts from your study material with their definitions!
-                                </p>
-                            </div>
+                    <div className="flex-1 overflow-y-auto p-4 sm:p-8">
 
-                            <div className="space-y-3 mb-6">
-                                {[
-                                    { icon: '🎯', title: 'Match Pairs', desc: 'Tap a concept on the left, then tap its matching definition on the right.' },
-                                    { icon: '🔥', title: 'Build Streaks', desc: 'Consecutive correct matches multiply your score! 10 × streak bonus per match.' },
-                                    { icon: '⚡', title: 'Beat the Clock', desc: 'Your time is tracked — try to finish faster each round.' },
-                                    { icon: '🏆', title: 'Clear All Rounds', desc: `${totalRounds} round${totalRounds > 1 ? 's' : ''} with ${currentPairs.length} pairs each. Match them all to win!` },
-                                ].map((rule, i) => (
-                                    <div key={i} className="flex items-start gap-3 bg-white/5 rounded-xl p-3">
-                                        <span className="text-lg">{rule.icon}</span>
-                                        <div>
-                                            <p className="text-sm font-bold">{rule.title}</p>
-                                            <p className="text-xs text-gray-400">{rule.desc}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <button
-                                onClick={startGame}
-                                className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-sm"
+                        {/* Rules Screen */}
+                        {gameState === 'rules' && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="glass rounded-2xl p-5 sm:p-8"
                             >
-                                Start Game <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </motion.div>
-                    )}
-
-                    {/* Playing Screen */}
-                    {gameState === 'playing' && (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                            {/* Stats Bar */}
-                            <div className="flex items-center justify-between glass rounded-xl px-4 py-2 mb-4 text-xs">
-                                <div className="flex items-center gap-1.5">
-                                    <Star className="w-3.5 h-3.5 text-primary" />
-                                    <span className="font-bold">{score}</span>
-                                    <span className="text-gray-500">pts</span>
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-4">
+                                        <Zap className="w-8 h-8 text-black" />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2">How to Play</h3>
+                                    <p className="text-sm text-gray-400">
+                                        Match concepts from your study material with their definitions!
+                                    </p>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                    <Zap className="w-3.5 h-3.5 text-yellow-400" />
-                                    <span className="font-bold">{streak}x</span>
-                                    <span className="text-gray-500">streak</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <Timer className="w-3.5 h-3.5 text-secondary" />
-                                    <span className="font-bold">{formatTime(timeLeft)}</span>
-                                </div>
-                                <div className="text-gray-500">
-                                    Round {currentRound + 1}/{totalRounds}
-                                </div>
-                            </div>
 
-                            {/* Progress dots */}
-                            <div className="flex gap-1 mb-4">
-                                {currentPairs.map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={`flex-1 h-1 rounded-full transition-colors ${i < matchedPairs.length ? 'bg-primary' : 'bg-white/10'
-                                            }`}
-                                    />
-                                ))}
-                            </div>
+                                <div className="space-y-3 mb-6">
+                                    {[
+                                        { icon: '🎯', title: 'Match Pairs', desc: 'Tap a concept on the left, then tap its matching definition on the right.' },
+                                        { icon: '🔥', title: 'Build Streaks', desc: 'Consecutive correct matches multiply your score! 10 × streak bonus per match.' },
+                                        { icon: '⚡', title: 'Beat the Clock', desc: 'Your time is tracked — try to finish faster each round.' },
+                                        { icon: '🏆', title: 'Clear All Rounds', desc: `${totalRounds} round${totalRounds > 1 ? 's' : ''} with ${currentPairs.length} pairs each. Match them all to win!` },
+                                    ].map((rule, i) => (
+                                        <div key={i} className="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                                            <span className="text-lg">{rule.icon}</span>
+                                            <div>
+                                                <p className="text-sm font-bold">{rule.title}</p>
+                                                <p className="text-xs text-gray-400">{rule.desc}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
 
-                            {/* Game Grid */}
-                            <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                                {/* Terms Column */}
-                                <div className="space-y-2">
-                                    <p className="text-[10px] uppercase tracking-wider text-primary font-bold mb-1 px-1">Concepts</p>
-                                    {currentPairs.map((pair) => {
-                                        const isMatched = matchedPairs.includes(pair.term);
-                                        const isSelected = selectedTerm === pair.term;
-                                        const isWrong = wrongPair?.term === pair.term;
+                                <button
+                                    onClick={startGame}
+                                    className="w-full py-4 bg-primary text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-sm mb-3 shadow-lg shadow-primary/20"
+                                >
+                                    Start Game <ChevronRight className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={onClose}
+                                    className="w-full py-3 bg-white/5 text-gray-400 font-bold rounded-xl hover:bg-white/10 transition-all text-xs"
+                                >
+                                    Not Now, Exit to Study
+                                </button>
+                            </motion.div>
+                        )}
 
-                                        return (
-                                            <motion.button
-                                                key={pair.term}
-                                                onClick={() => handleTermClick(pair.term)}
-                                                disabled={isMatched}
-                                                animate={isWrong ? { x: [0, -4, 4, -4, 0] } : {}}
-                                                className={`w-full text-left p-3 rounded-xl text-xs sm:text-sm font-medium transition-all ${isMatched
+                        {/* Playing Screen */}
+                        {gameState === 'playing' && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                {/* Stats Bar */}
+                                <div className="flex items-center justify-between glass rounded-xl px-4 py-2 mb-4 text-xs">
+                                    <div className="flex items-center gap-1.5">
+                                        <Star className="w-3.5 h-3.5 text-primary" />
+                                        <span className="font-bold">{score}</span>
+                                        <span className="text-gray-500">pts</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Zap className="w-3.5 h-3.5 text-yellow-400" />
+                                        <span className="font-bold">{streak}x</span>
+                                        <span className="text-gray-500">streak</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Timer className="w-3.5 h-3.5 text-secondary" />
+                                        <span className="font-bold">{formatTime(timeLeft)}</span>
+                                    </div>
+                                    <div className="text-gray-500">
+                                        Round {currentRound + 1}/{totalRounds}
+                                    </div>
+                                </div>
+
+                                {/* Progress dots */}
+                                <div className="flex gap-1 mb-4">
+                                    {currentPairs.map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`flex-1 h-1 rounded-full transition-colors ${i < matchedPairs.length ? 'bg-primary' : 'bg-white/10'
+                                                }`}
+                                        />
+                                    ))}
+                                </div>
+
+                                {/* Game Grid */}
+                                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                                    {/* Terms Column */}
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] uppercase tracking-wider text-primary font-bold mb-1 px-1">Concepts</p>
+                                        {currentPairs.map((pair) => {
+                                            const isMatched = matchedPairs.includes(pair.term);
+                                            const isSelected = selectedTerm === pair.term;
+                                            const isWrong = wrongPair?.term === pair.term;
+
+                                            return (
+                                                <motion.button
+                                                    key={pair.term}
+                                                    onClick={() => handleTermClick(pair.term)}
+                                                    disabled={isMatched}
+                                                    animate={isWrong ? { x: [0, -4, 4, -4, 0] } : {}}
+                                                    className={`w-full text-left p-3 rounded-xl text-xs sm:text-sm font-medium transition-all ${isMatched
                                                         ? 'bg-primary/20 text-primary border border-primary/30 opacity-60'
                                                         : isWrong
                                                             ? 'bg-red-500/20 text-red-400 border border-red-500/30'
                                                             : isSelected
                                                                 ? 'bg-primary/30 text-white border border-primary/50 scale-[1.02]'
                                                                 : 'glass hover:bg-white/10 border border-transparent'
-                                                    }`}
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    {isMatched && <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" />}
-                                                    {isWrong && <XCircle className="w-3.5 h-3.5 flex-shrink-0" />}
-                                                    <span className="truncate">{pair.term}</span>
-                                                </div>
-                                            </motion.button>
-                                        );
-                                    })}
-                                </div>
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        {isMatched && <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" />}
+                                                        {isWrong && <XCircle className="w-3.5 h-3.5 flex-shrink-0" />}
+                                                        <span className="truncate">{pair.term}</span>
+                                                    </div>
+                                                </motion.button>
+                                            );
+                                        })}
+                                    </div>
 
-                                {/* Definitions Column */}
-                                <div className="space-y-2">
-                                    <p className="text-[10px] uppercase tracking-wider text-secondary font-bold mb-1 px-1">Definitions</p>
-                                    {shuffledDefs.map((pair) => {
-                                        const isMatched = matchedPairs.includes(pair.term);
-                                        const isSelected = selectedDef === pair.definition;
-                                        const isWrong = wrongPair?.def === pair.definition;
+                                    {/* Definitions Column */}
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] uppercase tracking-wider text-secondary font-bold mb-1 px-1">Definitions</p>
+                                        {shuffledDefs.map((pair) => {
+                                            const isMatched = matchedPairs.includes(pair.term);
+                                            const isSelected = selectedDef === pair.definition;
+                                            const isWrong = wrongPair?.def === pair.definition;
 
-                                        return (
-                                            <motion.button
-                                                key={pair.definition}
-                                                onClick={() => handleDefClick(pair.definition)}
-                                                disabled={isMatched}
-                                                animate={isWrong ? { x: [0, 4, -4, 4, 0] } : {}}
-                                                className={`w-full text-left p-3 rounded-xl text-xs sm:text-sm transition-all ${isMatched
+                                            return (
+                                                <motion.button
+                                                    key={pair.definition}
+                                                    onClick={() => handleDefClick(pair.definition)}
+                                                    disabled={isMatched}
+                                                    animate={isWrong ? { x: [0, 4, -4, 4, 0] } : {}}
+                                                    className={`w-full text-left p-3 rounded-xl text-xs sm:text-sm transition-all ${isMatched
                                                         ? 'bg-secondary/20 text-secondary border border-secondary/30 opacity-60'
                                                         : isWrong
                                                             ? 'bg-red-500/20 text-red-400 border border-red-500/30'
                                                             : isSelected
                                                                 ? 'bg-secondary/30 text-white border border-secondary/50 scale-[1.02]'
                                                                 : 'glass hover:bg-white/10 border border-transparent'
-                                                    }`}
-                                            >
-                                                <div className="flex items-start gap-2">
-                                                    {isMatched && <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />}
-                                                    {isWrong && <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />}
-                                                    <span className="line-clamp-3">{pair.definition}</span>
-                                                </div>
-                                            </motion.button>
-                                        );
-                                    })}
+                                                        }`}
+                                                >
+                                                    <div className="flex items-start gap-2">
+                                                        {isMatched && <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />}
+                                                        {isWrong && <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />}
+                                                        <span className="line-clamp-3">{pair.definition}</span>
+                                                    </div>
+                                                </motion.button>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    )}
+                            </motion.div>
+                        )}
 
-                    {/* Results Screen */}
-                    {gameState === 'results' && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="glass rounded-2xl p-5 sm:p-8 text-center"
-                        >
-                            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4">
-                                <Trophy className="w-10 h-10 text-black" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-1">Game Complete! 🎉</h3>
-                            <p className="text-sm text-gray-400 mb-6">
-                                Great job mastering concepts from "{source?.title}"
-                            </p>
+                        {/* Results Screen */}
+                        {gameState === 'results' && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="glass rounded-2xl p-5 sm:p-8 text-center"
+                            >
+                                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4">
+                                    <Trophy className="w-10 h-10 text-black" />
+                                </div>
+                                <h3 className="text-2xl font-bold mb-1">Game Complete! 🎉</h3>
+                                <p className="text-sm text-gray-400 mb-6">
+                                    Great job mastering concepts from "{source?.title}"
+                                </p>
 
-                            <div className="grid grid-cols-3 gap-3 mb-6">
-                                <div className="glass rounded-xl p-3">
-                                    <Star className="w-5 h-5 text-primary mx-auto mb-1" />
-                                    <p className="text-xl font-bold">{score}</p>
-                                    <p className="text-[10px] text-gray-400">Total Score</p>
+                                <div className="grid grid-cols-3 gap-3 mb-6">
+                                    <div className="glass rounded-xl p-3">
+                                        <Star className="w-5 h-5 text-primary mx-auto mb-1" />
+                                        <p className="text-xl font-bold">{score}</p>
+                                        <p className="text-[10px] text-gray-400">Total Score</p>
+                                    </div>
+                                    <div className="glass rounded-xl p-3">
+                                        <Timer className="w-5 h-5 text-secondary mx-auto mb-1" />
+                                        <p className="text-xl font-bold">{formatTime(timeLeft)}</p>
+                                        <p className="text-[10px] text-gray-400">Time</p>
+                                    </div>
+                                    <div className="glass rounded-xl p-3">
+                                        <Zap className="w-5 h-5 text-yellow-400 mx-auto mb-1" />
+                                        <p className="text-xl font-bold">{bestStreak}x</p>
+                                        <p className="text-[10px] text-gray-400">Best Streak</p>
+                                    </div>
                                 </div>
-                                <div className="glass rounded-xl p-3">
-                                    <Timer className="w-5 h-5 text-secondary mx-auto mb-1" />
-                                    <p className="text-xl font-bold">{formatTime(timeLeft)}</p>
-                                    <p className="text-[10px] text-gray-400">Time</p>
-                                </div>
-                                <div className="glass rounded-xl p-3">
-                                    <Zap className="w-5 h-5 text-yellow-400 mx-auto mb-1" />
-                                    <p className="text-xl font-bold">{bestStreak}x</p>
-                                    <p className="text-[10px] text-gray-400">Best Streak</p>
-                                </div>
-                            </div>
 
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={startGame}
-                                    className="flex-1 py-3 bg-gradient-to-r from-primary to-secondary text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-sm"
-                                >
-                                    <RotateCcw className="w-4 h-4" /> Play Again
-                                </button>
-                                <button
-                                    onClick={onClose}
-                                    className="flex-1 py-3 glass hover:bg-white/10 font-bold rounded-xl text-sm transition-all"
-                                >
-                                    Back to Study
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={startGame}
+                                        className="flex-1 py-3 bg-gradient-to-r from-primary to-secondary text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-sm"
+                                    >
+                                        <RotateCcw className="w-4 h-4" /> Play Again
+                                    </button>
+                                    <button
+                                        onClick={onClose}
+                                        className="flex-1 py-3 glass hover:bg-white/10 font-bold rounded-xl text-sm transition-all"
+                                    >
+                                        Back to Study
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
                 </motion.div>
             </motion.div>
         </AnimatePresence>

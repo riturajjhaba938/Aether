@@ -8,7 +8,7 @@ const AETHER_SYSTEM_PROMPT = `You are the Aether Synthesis Engine. Analyze conte
   "summary": "2-3 sentence summary",
   "knowledge_graph": [{"term": "concept name", "group": 1, "definition": "brief definition"}],
   "interactive_timeline": [{"timestamp": seconds_int, "label": "short label", "deep_dive": "1 sentence fact"}],
-  "quiz_bank": [{"question": "q", "options": ["a","b","c","d"], "answer": 0}],
+  "quiz_bank": [{"question": "q", "options": ["a","b","c","d"], "answer": 0, "timestamp": seconds_int}],
   "the_gravity_shift": "ELI5 of hardest concept"
 }
 Rules: knowledge_graph max 12 items. quiz_bank max 5 questions. timeline max 8 items. answer is index 0-3. Be concise.`;
@@ -33,11 +33,9 @@ exports.generateAetherContent = async (content) => {
       const truncatedContent = content.length > 15000 ? content.substring(0, 15000) : content;
       const prompt = `${AETHER_SYSTEM_PROMPT}\n\nCONTENT:\n${truncatedContent}`;
 
-      console.log(`[Aether AI] Attempt ${attempt}/${MAX_RETRIES} | Content: ${truncatedContent.length} chars`);
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
-      console.log('[Aether AI] Synthesis successful!');
       return JSON.parse(text);
     } catch (error) {
       console.error(`[Aether AI] Attempt ${attempt} failed:`, error.status, error.message?.substring(0, 100));

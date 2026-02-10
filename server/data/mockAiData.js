@@ -36,31 +36,36 @@ const MOCK_DATA = {
                 question: "What type of database is MongoDB?",
                 options: ["Relational (SQL)", "Document-oriented (NoSQL)", "Graph database", "Key-value store"],
                 answer: 1,
-                distractor_explanation: "MongoDB is a document-oriented NoSQL database, not relational."
+                distractor_explanation: "MongoDB is a document-oriented NoSQL database, not relational.",
+                timestamp: 45
             },
             {
                 question: "What format does MongoDB use to store documents?",
                 options: ["XML", "CSV", "BSON (Binary JSON)", "Plain text"],
                 answer: 2,
-                distractor_explanation: "MongoDB stores data as BSON, which is a binary representation of JSON."
+                distractor_explanation: "MongoDB stores data as BSON, which is a binary representation of JSON.",
+                timestamp: 150
             },
             {
                 question: "What is a Collection in MongoDB equivalent to in SQL?",
                 options: ["A row", "A column", "A table", "A database"],
                 answer: 2,
-                distractor_explanation: "A collection in MongoDB is similar to a table in relational databases."
+                distractor_explanation: "A collection in MongoDB is similar to a table in relational databases.",
+                timestamp: 320
             },
             {
                 question: "Which library is commonly used as an ODM for MongoDB with Node.js?",
                 options: ["Sequelize", "Prisma", "Mongoose", "TypeORM"],
                 answer: 2,
-                distractor_explanation: "Mongoose is the most popular ODM for MongoDB in Node.js applications."
+                distractor_explanation: "Mongoose is the most popular ODM for MongoDB in Node.js applications.",
+                timestamp: 1510
             },
             {
                 question: "What does CRUD stand for?",
                 options: ["Connect, Read, Update, Deploy", "Create, Read, Update, Delete", "Cache, Render, Upload, Download", "Compile, Run, Upload, Debug"],
                 answer: 1,
-                distractor_explanation: "CRUD represents the four fundamental database operations."
+                distractor_explanation: "CRUD represents the four fundamental database operations.",
+                timestamp: 490
             }
         ],
         the_gravity_shift: "Think of MongoDB like a filing cabinet where each folder (document) can have different types of papers inside — unlike a spreadsheet (SQL) where every row must have the exact same columns."
@@ -97,31 +102,36 @@ const MOCK_DATA = {
                 question: "What does oxidation involve?",
                 options: ["Gaining electrons", "Losing electrons", "Gaining protons", "Losing neutrons"],
                 answer: 1,
-                distractor_explanation: "Oxidation is the loss of electrons (OIL — Oxidation Is Loss)."
+                distractor_explanation: "Oxidation is the loss of electrons (OIL — Oxidation Is Loss).",
+                timestamp: 100
             },
             {
                 question: "What does OIL RIG stand for?",
                 options: ["Oxygen In Liquid, Reaction In Gas", "Oxidation Is Loss, Reduction Is Gain", "Only Ions Link, Reactions Involve Gases", "Oxidation Increases Load, Reduction Increases Gain"],
                 answer: 1,
-                distractor_explanation: "OIL RIG is the classic mnemonic for remembering electron transfer direction."
+                distractor_explanation: "OIL RIG is the classic mnemonic for remembering electron transfer direction.",
+                timestamp: 360
             },
             {
                 question: "An oxidizing agent _____ electrons.",
                 options: ["Loses", "Gains", "Shares", "Destroys"],
                 answer: 1,
-                distractor_explanation: "An oxidizing agent gains electrons (gets reduced itself)."
+                distractor_explanation: "An oxidizing agent gains electrons (gets reduced itself).",
+                timestamp: 510
             },
             {
                 question: "Which is a real-world example of a redox reaction?",
                 options: ["Dissolving sugar in water", "Rusting of iron", "Melting ice", "Boiling water"],
                 answer: 1,
-                distractor_explanation: "Rusting is iron being oxidized by oxygen — a classic redox reaction."
+                distractor_explanation: "Rusting is iron being oxidized by oxygen — a classic redox reaction.",
+                timestamp: 860
             },
             {
                 question: "In a redox reaction, the total electrons lost must equal:",
                 options: ["Total protons gained", "Total electrons gained", "Total neutrons", "Zero"],
                 answer: 1,
-                distractor_explanation: "Electron transfer is conserved — what's lost by one species is gained by another."
+                distractor_explanation: "Electron transfer is conserved — what's lost by one species is gained by another.",
+                timestamp: 690
             }
         ],
         the_gravity_shift: "Imagine a game of catch with invisible balls (electrons). One player throws (oxidation = losing electrons), the other catches (reduction = gaining electrons). The thrower is the 'reducing agent' because they help the other player catch — confusing, but that's the trick!"
@@ -158,31 +168,36 @@ const MOCK_DATA = {
                 question: "What is the formula for momentum?",
                 options: ["p = ma", "p = mv", "p = Fd", "p = mgh"],
                 answer: 1,
-                distractor_explanation: "Momentum (p) equals mass (m) times velocity (v)."
+                distractor_explanation: "Momentum (p) equals mass (m) times velocity (v).",
+                timestamp: 125
             },
             {
                 question: "In which type of collision is kinetic energy conserved?",
                 options: ["Inelastic", "Elastic", "Perfectly inelastic", "Explosive"],
                 answer: 1,
-                distractor_explanation: "Elastic collisions conserve both momentum and kinetic energy."
+                distractor_explanation: "Elastic collisions conserve both momentum and kinetic energy.",
+                timestamp: 610
             },
             {
                 question: "What is impulse equal to?",
                 options: ["Mass × acceleration", "Change in momentum", "Force × distance", "Energy × time"],
                 answer: 1,
-                distractor_explanation: "Impulse equals the change in momentum (J = Δp = FΔt)."
+                distractor_explanation: "Impulse equals the change in momentum (J = Δp = FΔt).",
+                timestamp: 290
             },
             {
                 question: "Why do airbags reduce injury in car crashes?",
                 options: ["They reduce momentum", "They increase collision time, reducing force", "They absorb all kinetic energy", "They increase the car's mass"],
                 answer: 1,
-                distractor_explanation: "Airbags increase the time over which momentum changes, reducing the peak force on the body."
+                distractor_explanation: "Airbags increase the time over which momentum changes, reducing the peak force on the body.",
+                timestamp: 295
             },
             {
                 question: "How do rockets propel themselves in space?",
                 options: ["By pushing against air", "By conservation of momentum — expelling gas backward", "By using gravity", "By magnetic fields"],
                 answer: 1,
-                distractor_explanation: "Rockets work by expelling mass backward; by conservation of momentum, the rocket moves forward."
+                distractor_explanation: "Rockets work by expelling mass backward; by conservation of momentum, the rocket moves forward.",
+                timestamp: 960
             }
         ],
         the_gravity_shift: "Imagine you're standing on a skateboard holding a heavy ball. When you throw the ball forward, you roll backward. That's conservation of momentum — the total 'movement juice' stays the same, it just gets shared differently!"
@@ -219,31 +234,36 @@ const MOCK_DATA = {
                 question: "What is a matrix?",
                 options: ["A single equation", "A rectangular array of numbers in rows and columns", "A type of graph", "A vector quantity"],
                 answer: 1,
-                distractor_explanation: "A matrix is a rectangular arrangement of numbers in rows and columns."
+                distractor_explanation: "A matrix is a rectangular arrangement of numbers in rows and columns.",
+                timestamp: 10
             },
             {
                 question: "What is the determinant of [[2,3],[1,4]]?",
                 options: ["5", "11", "8", "6"],
                 answer: 0,
-                distractor_explanation: "det = (2×4) - (3×1) = 8 - 3 = 5"
+                distractor_explanation: "det = (2×4) - (3×1) = 8 - 3 = 5",
+                timestamp: 660
             },
             {
                 question: "When does a matrix NOT have an inverse?",
                 options: ["When it's square", "When its determinant is 0", "When it has negative numbers", "When it's symmetric"],
                 answer: 1,
-                distractor_explanation: "A matrix with determinant = 0 is singular and has no inverse."
+                distractor_explanation: "A matrix with determinant = 0 is singular and has no inverse.",
+                timestamp: 830
             },
             {
                 question: "Is matrix multiplication commutative (AB = BA)?",
                 options: ["Always yes", "Generally no", "Only for 2×2 matrices", "Only for identity matrices"],
                 answer: 1,
-                distractor_explanation: "In general, AB ≠ BA — the order of multiplication matters for matrices."
+                distractor_explanation: "In general, AB ≠ BA — the order of multiplication matters for matrices.",
+                timestamp: 490
             },
             {
                 question: "What is the identity matrix?",
                 options: ["A matrix of all zeros", "A matrix with 1s on diagonal and 0s elsewhere", "A matrix equal to its transpose", "Any square matrix"],
                 answer: 1,
-                distractor_explanation: "The identity matrix has 1s on the main diagonal and 0s everywhere else."
+                distractor_explanation: "The identity matrix has 1s on the main diagonal and 0s everywhere else.",
+                timestamp: 160
             }
         ],
         the_gravity_shift: "A matrix is like a magic box — you put a shape in one side (a vector), and it comes out transformed (rotated, stretched, flipped) on the other side. The numbers in the matrix are the 'instructions' for how to transform it!"
@@ -251,7 +271,7 @@ const MOCK_DATA = {
 
     // Neural Networks: https://youtu.be/aircAruvnKk
     "aircAruvnKk": {
-        summary: "Neural networks are computing systems inspired by the biological brain, composed of layers of artificial neurons. Each neuron takes inputs, weights them, adds a bias, and passes the result through an activation function (like sigmoid or ReLU). The network 'learns' by adjusting these weights and biases to minimize error, allowing it to recognize patterns like handwritten digits.",
+        summary: "Neural networks are computing systems inspired by the biological brain [0:45], composed of layers of artificial neurons. Each neuron takes inputs, weights them, adds a bias [2:00], and passes the result through an activation function like sigmoid [5:00]. The network 'learns' by adjusting these weights and biases to minimize error, allowing it to recognize patterns like handwritten digits [9:30].",
         knowledge_graph: [
             { term: "Neuron", group: 1, definition: "A computational unit that takes inputs, applies weights, adds bias, and fires an output" },
             { term: "Weight", group: 1, definition: "A number representing the strength of connection between two neurons" },
@@ -276,19 +296,22 @@ const MOCK_DATA = {
                 question: "What is the purpose of an activation function?",
                 options: ["To store data", "To determine the output of a neuron", "To delete the neuron", "To add noise"],
                 answer: 1,
-                distractor_explanation: "The activation function (like Sigmoid) decides the output level of the neuron based on its weighted input."
+                distractor_explanation: "The activation function (like Sigmoid) decides the output level of the neuron based on its weighted input.",
+                timestamp: 545
             },
             {
                 question: "What does a bias do?",
                 options: ["Identifies the neuron", "Shifts the activation threshold", "Multiplies the input", "Resets the network"],
                 answer: 1,
-                distractor_explanation: "A bias shifts the activation curve, effectively controlling the threshold at which the neuron fires."
+                distractor_explanation: "A bias shifts the activation curve, effectively controlling the threshold at which the neuron fires.",
+                timestamp: 310
             },
             {
                 question: "In the example, what does a neuron in the first hidden layer represent?",
                 options: ["A full number", "A specific pixel", "Abstract patterns or edges", "The final answer"],
                 answer: 2,
-                distractor_explanation: "Hidden neurons often learn to recognize substructures like edges or small curves."
+                distractor_explanation: "Hidden neurons often learn to recognize substructures like edges or small curves.",
+                timestamp: 970
             }
         ],
         the_gravity_shift: "Think of a neural network like a plinko board where the pegs (weights) move. You drop a ball (input), and if it lands in the wrong bin, you nudge the pegs slightly so next time it lands in the right one!"
@@ -296,7 +319,7 @@ const MOCK_DATA = {
 
     // The Egg: https://youtu.be/h6fcK_fRYaI
     "h6fcK_fRYaI": {
-        summary: "The Egg is a short story by Andy Weir about a man who dies and meets God. God reveals that the man will be reincarnated as every human who has ever lived and will ever live. The entire universe was created as an egg for the main character to mature until they have lived every human life and can become a god themselves.",
+        summary: "The Egg is a short story by Andy Weir about a man who dies and meets God [0:00]. God reveals that the man will be reincarnated as every human who has ever lived and will ever live [2:30]. The entire universe was created as an egg for the main character to mature until they have lived every human life and can become a god themselves [7:00].",
         knowledge_graph: [
             { term: "Reincarnation", group: 1, definition: "The concept of being born again in a new body after death" },
             { term: "The Egg", group: 1, definition: "Metaphor for the universe serving as an incubator for a developing god-consciousness" },
@@ -319,19 +342,22 @@ const MOCK_DATA = {
                 question: "Who is the main character reincarnated as?",
                 options: ["Only good people", "Only famous people", "Every human being who ever lived", "Animals"],
                 answer: 2,
-                distractor_explanation: "The story reveals he is, in fact, every human being throughout all of history."
+                distractor_explanation: "The story reveals he is, in fact, every human being throughout all of history.",
+                timestamp: 365
             },
             {
                 question: "Why was the universe created according to the story?",
                 options: ["As a punishment", "As an egg for the protagonist to grow", "It was an accident", "To trap souls"],
                 answer: 1,
-                distractor_explanation: "The universe is described as an egg, an incubator for the protagonist's soul to mature."
+                distractor_explanation: "The universe is described as an egg, an incubator for the protagonist's soul to mature.",
+                timestamp: 425
             },
             {
                 question: "What happens when 'you' hurt someone?",
                 options: ["You gain karma", "You hurt yourself", "Nothing happens", "God gets angry"],
                 answer: 1,
-                distractor_explanation: "Since you are everyone, every act of violence is self-inflicted."
+                distractor_explanation: "Since you are everyone, every act of violence is self-inflicted.",
+                timestamp: 470
             }
         ],
         the_gravity_shift: "Imagine playing a multiplayer video game, but realizing you are actually controlling every single character on the server, just taking turns one life at a time. That's The Egg."
@@ -339,7 +365,7 @@ const MOCK_DATA = {
 
     // Quantum Computers: https://youtu.be/JhHMJCUmq28
     "JhHMJCUmq28": {
-        summary: "Quantum computers use the principles of quantum mechanics — specifically superposition and entanglement — to solve certain complex problems exponentially faster than classical computers. While classical bits are 0 or 1, Qubits can be in a state of superposition (both 0 and 1) until measured.",
+        summary: "Quantum computers use the principles of quantum mechanics — specifically superposition [1:30] and entanglement [4:00] — to solve certain complex problems exponentially faster than classical computers. While classical bits are 0 or 1, Qubits can be in a state of superposition (both 0 and 1) until measured [6:45].",
         knowledge_graph: [
             { term: "Qubit", group: 1, definition: "The basic unit of quantum information, capable of existing in superposition" },
             { term: "Superposition", group: 1, definition: "A state where a qubit represents both 0 and 1 simultaneously with certain probabilities" },
@@ -363,19 +389,22 @@ const MOCK_DATA = {
                 question: "What is the fundamental unit of a quantum computer?",
                 options: ["Byte", "Bit", "Qubit", "Pixel"],
                 answer: 2,
-                distractor_explanation: "A Qubit (Quantum Bit) is the basic unit, capable of superposition."
+                distractor_explanation: "A Qubit (Quantum Bit) is the basic unit, capable of superposition.",
+                timestamp: 10
             },
             {
                 question: "What is Superposition?",
                 options: ["Can be 0 and 1 at the same time", "Being in two places", "Moving faster than light", "Zero gravity"],
                 answer: 0,
-                distractor_explanation: "Superposition allows a qubit to exist in a probability state of both 0 and 1."
+                distractor_explanation: "Superposition allows a qubit to exist in a probability state of both 0 and 1.",
+                timestamp: 125
             },
             {
                 question: "Are quantum computers faster at everything?",
                 options: ["Yes, much faster", "No, only specific types of problems", "They are slower", "Same speed"],
                 answer: 1,
-                distractor_explanation: "They are only faster for specific algorithms (like factoring or search), not general browsing or gaming."
+                distractor_explanation: "They are only faster for specific algorithms (like factoring or search), not general browsing or gaming.",
+                timestamp: 485
             }
         ],
         the_gravity_shift: "A classical computer solves a maze by trying one path, hitting a wall, and starting over. A quantum computer tries EVERY path simultaneously and instantly reveals the exit."

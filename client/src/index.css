@@ -46,3 +46,59 @@ button {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* Aetherial Pulse & Glow Animations */
+@keyframes aether-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(56, 189, 248, 0.2), 0 0 10px rgba(56, 189, 248, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4), 0 0 25px rgba(56, 189, 248, 0.2);
+  }
+}
+
+@keyframes aether-pulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.animate-glow {
+  animation: aether-glow 3s infinite ease-in-out;
+}
+
+.animate-pulse-slow {
+  animation: aether-pulse 4s infinite ease-in-out;
+}
+
+.scanline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(56, 189, 248, 0.2), transparent);
+  animation: scanline 2s linear infinite;
+}

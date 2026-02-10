@@ -51,6 +51,10 @@ const Dashboard = () => {
             try {
                 const { data } = await axios.get(`/api/sources/${userId}`);
                 setSources(data);
+                // Auto-launch most recent source if returning to dashboard
+                if (data.length > 0 && !loading) {
+                    navigate(`/workspace/${data[0]._id}`);
+                }
             } catch (err) {
                 console.error("Error fetching library", err);
             } finally {
@@ -162,12 +166,32 @@ const Dashboard = () => {
             </div>
 
             {sources.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-[50vh] text-center">
-                    <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-                        <Play className="w-8 h-8 text-primary" />
+                <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-lg mx-auto">
+                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-8 relative">
+                        <Play className="w-10 h-10 text-primary animate-pulse" />
+                        <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">No Sources Yet</h3>
-                    <p className="text-gray-400 max-w-sm">Click "Add New Source" to add a video or PDF and let Aether synthesize your first study session.</p>
+                    <h3 className="text-3xl font-bold mb-4 tracking-tight">Your Second Brain is Ready.</h3>
+                    <p className="text-gray-400 mb-10 text-lg leading-relaxed">
+                        Aether transforms passive watching into active understanding. Add your first source to begin, or try our curated demo.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full">
+                        <button
+                            onClick={() => setShowAddModal(true)}
+                            className="flex-1 bg-white/5 border border-white/10 text-white font-bold px-8 py-4 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3"
+                        >
+                            <Plus size={20} /> Add Source
+                        </button>
+                        <button
+                            onClick={() => {
+                                setNewSource({ title: "Neural Networks (3Blue1Brown)", url: "https://www.youtube.com/watch?v=aircAruvnKk", type: 'video' });
+                                handleAddSource({ preventDefault: () => { } });
+                            }}
+                            className="flex-1 bg-primary text-black font-bold px-8 py-4 rounded-2xl hover:bg-primary/80 transition-all hover:scale-105 flex items-center justify-center gap-3"
+                        >
+                            <Zap size={20} fill="currentColor" /> Start Demo Session
+                        </button>
+                    </div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -208,7 +232,7 @@ const Dashboard = () => {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-[#1a1a1a] border border-white/10 p-6 rounded-2xl w-full max-w-md shadow-2xl"
+                            className="bg-[#1a1a1a] border border-white/10 p-6 rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden scanline"
                         >
                             {/* Normal form state */}
                             {!adding ? (
@@ -335,7 +359,7 @@ const Dashboard = () => {
                                         <motion.div
                                             animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
                                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                            className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center relative"
+                                            className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center relative animate-glow animate-pulse-slow"
                                         >
                                             <StepIcon className="w-8 h-8 text-primary" />
                                             {/* Orbiting dot */}

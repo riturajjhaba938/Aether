@@ -50,9 +50,9 @@ const Home = () => {
                             Get Started for Free
                             <ArrowRight className="w-5 h-5" />
                         </Link>
-                        <button className="px-6 sm:px-8 py-3 sm:py-4 glass font-bold rounded-2xl hover:bg-white/10 transition-all text-sm sm:text-base">
-                            Watch Demo
-                        </button>
+                        <Link to="/login" className="px-6 sm:px-8 py-3 sm:py-4 glass font-bold rounded-2xl hover:bg-white/10 transition-all text-sm sm:text-base">
+                            Watch Video Demo
+                        </Link>
                     </motion.div>
                 </div>
 
