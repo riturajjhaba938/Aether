@@ -4,6 +4,12 @@
 
 ---
 
+🌌 AETHER 🌌
+- **Live Demo**: https://aether-five-tau.vercel.app/
+- **Demo video**: https://youtu.be/TULmlNcDTJQ
+- **PPT**: https://gamma.app/docs/Dev-Heat-Hackathon-PPT-Formatepptx-jum1ouh6e5txraw
+
+
 ## 🚀 Key Features
 
 ### 🧠 1. AI Synthesis Engine (Google Gemini)
