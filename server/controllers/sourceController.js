@@ -59,7 +59,7 @@ exports.addSource = async (req, res) => {
                     console.error("PDF Parse Error:", err);
                     return res.status(400).json({ message: "Failed to parse PDF file." });
                 }
-            } else {
+            } else if (!url || !url.startsWith('demo://')) {
                 return res.status(400).json({ message: "No PDF file uploaded." });
             }
         }
@@ -130,5 +130,38 @@ exports.deleteSource = async (req, res) => {
         res.status(200).json({ message: "Source deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting source", error: error.message });
+    }
+};
+
+exports.chatWithSource = async (req, res) => {
+    try {
+        const { sourceId, messages } = req.body;
+
+        let content = "";
+        let title = "Current Context";
+
+        if (sourceId) {
+            const source = await StudySource.findById(sourceId);
+            if (source) {
+                // Prioritize content, then summary, then aiData summary
+                content = source.content || source.summary || source.aiData?.summary;
+                title = source.title;
+                console.log(`[Chat] Content length for ${sourceId}: ${content ? content.length : 0}`);
+            }
+        }
+
+        if (!content) {
+            console.warn(`[Chat] No content found for source ${sourceId}`);
+            return res.status(404).json({ message: "Source content not found" });
+        }
+
+        const { chatWithSource } = require('./aiController');
+        const reply = await chatWithSource(content, messages);
+
+        res.json({ reply });
+
+    } catch (error) {
+        console.error("Chat Error:", error);
+        res.status(500).json({ message: "Error processing chat", error: error.message });
     }
 };

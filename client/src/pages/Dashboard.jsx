@@ -114,12 +114,18 @@ const Dashboard = () => {
             if (newSource.type === 'video') {
                 formData.append('url', newSource.url);
             } else if (newSource.type === 'pdf') {
-                if (!selectedFile) {
+                const isDemo = newSource.url && newSource.url.startsWith('demo://');
+                if (!selectedFile && !isDemo) {
                     alert("Please select a PDF file.");
                     setAdding(false);
                     return;
                 }
-                formData.append('file', selectedFile);
+                if (selectedFile && !(selectedFile.size === 0 && isDemo)) {
+                    formData.append('file', selectedFile);
+                }
+                if (isDemo) {
+                    formData.append('url', newSource.url);
+                }
             }
 
             const { data } = await axios.post('/sources', formData, {

@@ -7,19 +7,43 @@ const ChatPane = ({ source }) => {
     ]);
     const [input, setInput] = React.useState('');
 
-    const handleSend = () => {
-        if (!input.trim()) return;
-        const newMessages = [...messages, { role: 'user', content: input }];
+    const [loading, setLoading] = React.useState(false);
+
+    const handleSend = async () => {
+        if (!input.trim() || loading) return;
+
+        const userMsg = { role: 'user', content: input };
+        const newMessages = [...messages, userMsg];
         setMessages(newMessages);
         setInput('');
+        setLoading(true);
 
-        // Simulate AI response
-        setTimeout(() => {
-            setMessages([...newMessages, {
+        try {
+            const res = await fetch('http://localhost:5000/sources/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sourceId: source?._id,
+                    messages: newMessages
+                })
+            });
+
+            const data = await res.json();
+
+            setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `I'm processing your request about ${source?.title || 'the current context'}. In a full implementation, I would query the vector database now.`
+                content: data.reply || "I'm sorry, I couldn't process that."
             }]);
-        }, 1000);
+
+        } catch (err) {
+            console.error(err);
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: "Error connecting to Aether AI. Please try again."
+            }]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

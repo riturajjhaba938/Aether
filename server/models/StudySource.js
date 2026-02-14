@@ -35,7 +35,8 @@ const studySourceSchema = new mongoose.Schema({
             options: [{ type: String }],
             answer: { type: Number }, // Index of correct option
             distractor_explanation: { type: String },
-            timestamp: { type: Number } // Video timestamp link
+            timestamp: { type: Number }, // Video timestamp link
+            citation: { type: String } // Verbatim text snippet from document
         }],
         the_gravity_shift: { type: String }
     },

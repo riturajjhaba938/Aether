@@ -1,5 +1,5 @@
 const express = require('express');
-const { addSource, getSources, getSourceById, deleteSource } = require('../controllers/sourceController');
+const { addSource, getSources, getSourceById, deleteSource, chatWithSource } = require('../controllers/sourceController');
 const router = express.Router();
 const multer = require('multer');
 
@@ -11,6 +11,7 @@ const upload = multer({
 });
 
 // Use upload.single('file') to handle multipart/form-data
+router.post('/chat', chatWithSource);
 router.post('/', upload.single('file'), addSource);
 router.delete('/:sourceId', deleteSource);
 router.get('/single/:sourceId', getSourceById);

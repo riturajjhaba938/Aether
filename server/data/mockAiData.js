@@ -37,35 +37,40 @@ const MOCK_DATA = {
                 options: ["Relational (SQL)", "Document-oriented (NoSQL)", "Graph database", "Key-value store"],
                 answer: 1,
                 distractor_explanation: "MongoDB is a document-oriented NoSQL database, not relational.",
-                timestamp: 45
+                timestamp: 45,
+                citation: "MongoDB is a NoSQL document-based database"
             },
             {
                 question: "What format does MongoDB use to store documents?",
                 options: ["XML", "CSV", "BSON (Binary JSON)", "Plain text"],
                 answer: 2,
                 distractor_explanation: "MongoDB stores data as BSON, which is a binary representation of JSON.",
-                timestamp: 150
+                timestamp: 150,
+                citation: "stores data in flexible JSON-like documents (BSON)"
             },
             {
                 question: "What is a Collection in MongoDB equivalent to in SQL?",
                 options: ["A row", "A column", "A table", "A database"],
                 answer: 2,
                 distractor_explanation: "A collection in MongoDB is similar to a table in relational databases.",
-                timestamp: 320
+                timestamp: 320,
+                citation: "equivalent to a table in relational databases"
             },
             {
                 question: "Which library is commonly used as an ODM for MongoDB with Node.js?",
                 options: ["Sequelize", "Prisma", "Mongoose", "TypeORM"],
                 answer: 2,
                 distractor_explanation: "Mongoose is the most popular ODM for MongoDB in Node.js applications.",
-                timestamp: 1510
+                timestamp: 1510,
+                citation: "Mongoose: An ODM (Object Data Modeling) library"
             },
             {
                 question: "What does CRUD stand for?",
                 options: ["Connect, Read, Update, Deploy", "Create, Read, Update, Delete", "Cache, Render, Upload, Download", "Compile, Run, Upload, Debug"],
                 answer: 1,
                 distractor_explanation: "CRUD represents the four fundamental database operations.",
-                timestamp: 490
+                timestamp: 490,
+                citation: "CRUD Operations: Create, Read, Update, Delete"
             }
         ],
         the_gravity_shift: "Think of MongoDB like a filing cabinet where each folder (document) can have different types of papers inside — unlike a spreadsheet (SQL) where every row must have the exact same columns."
@@ -412,7 +417,7 @@ const MOCK_DATA = {
 
     // PDF Demo: The Nature of Space and Time
     "demo://nature-of-space-time": {
-        summary: "This seminal work by Stephen Hawking and Roger Penrose explores the fundamental nature of the universe. It debates the roles of General Relativity and Quantum Mechanics in understanding singularities, the arrow of time, and the possible origins of the cosmos at the Big Bang.",
+        summary: "This seminal work by Stephen Hawking and Roger Penrose explores the fundamental nature of the universe. It debates the roles of General Relativity (Einstein's theory of gravity, describing it as curvature of spacetime) and Quantum Mechanics. It delves into singularities, which are defined as points of infinite density and zero volume, the arrow of time, and the possible origins of the cosmos at the Big Bang.",
         knowledge_graph: [
             { term: "General Relativity", group: 1, definition: "Einstein's theory of gravity, describing it as curvature of spacetime" },
             { term: "Quantum Mechanics", group: 1, definition: "Study of particles at the smallest scales where behavior is probabilistic" },
@@ -434,14 +439,16 @@ const MOCK_DATA = {
                 options: ["A force between masses", "Curvature of spacetime", "Magnetic waves", "Particle exchange"],
                 answer: 1,
                 distractor_explanation: "Relativity treats gravity as the shape of space itself, not a traditional force.",
-                timestamp: 0
+                timestamp: 0,
+                citation: "Einstein's theory of gravity, describing it as curvature of spacetime"
             },
             {
                 question: "What happens at a Singularity?",
                 options: ["Density becomes infinite", "Gravity reaches zero", "Time stops completely", "Light moves backward"],
                 answer: 0,
                 distractor_explanation: "A singularity is mathematically a point where density becomes infinite and laws of physics break down.",
-                timestamp: 1
+                timestamp: 1,
+                citation: "points of infinite density and zero volume"
             }
         ],
         the_gravity_shift: "The universe is like a balloon being inflated. Singularities are the points (like the beginning) where the rubber of the balloon is stretched so much it becomes infinitely thin — that's where our math stops working."
@@ -471,14 +478,16 @@ const MOCK_DATA = {
                 options: ["RNN", "Vanilla Perceptron", "CNN", "Linear Regression"],
                 answer: 2,
                 distractor_explanation: "CNNs are designed to recognize spatial patterns, making them ideal for pixel data.",
-                timestamp: 0
+                timestamp: 0,
+                citation: "Convolutional Neural Networks (CNNs) for vision"
             },
             {
                 question: "What is the core innovation of the Transformer?",
                 options: ["Convolution", "LSTMs", "Self-Attention", "Recursion"],
                 answer: 2,
                 distractor_explanation: "Self-attention allows transformers to weigh the importance of different words in a sentence simultaneously.",
-                timestamp: 2
+                timestamp: 2,
+                citation: "Transformer architecture that powers LLMs like GPT"
             }
         ],
         the_gravity_shift: "Deep Learning is building a pyramid of understand. The bottom layer sees 'lines', the middle layer sees 'eyes', and the top layer sees 'a face'. The AI doesn't know it's a face — it just knows the pyramid's math checks out."

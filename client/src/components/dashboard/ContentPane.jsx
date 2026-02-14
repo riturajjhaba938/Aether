@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 // Native iframe approach for maximum stability
-import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2, AlertCircle } from 'lucide-react';
+import { Play, Maximize2, FileText, CheckCircle, HelpCircle, ArrowRight, X, Gamepad2, AlertCircle, BookOpen, Brain, Search, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConceptGame from './ConceptGame';
 
@@ -45,10 +45,12 @@ const formatNotesWithCitations = (text, onSeek) => {
 
 const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
     const playerRef = useRef(null);
+    const docContentRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [videoError, setVideoError] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
+    const [showSummary, setShowSummary] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showGame, setShowGame] = useState(false);
     const [attempts, setAttempts] = useState({});
@@ -75,6 +77,30 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                 func: 'playVideo'
             }), '*');
             setPlaying(true);
+        }
+    };
+
+    const scrollToCitation = (text) => {
+        if (!text || !docContentRef.current) return;
+
+        // Simple text search and scroll
+        const container = docContentRef.current;
+        const content = container.innerText;
+        const index = content.indexOf(text);
+
+        if (index !== -1) {
+            // Use window.find if available (most browsers) for highlighting
+            if (window.find) {
+                // Reset selection first
+                window.getSelection().removeAllRanges();
+                if (window.find(text, false, false, true, false, true, false)) {
+                    // Success! highlight and scroll is handled by window.find
+                    return;
+                }
+            }
+
+            // Fallback: simple scroll to top of container if highlight fails
+            container.scrollTop = 0;
         }
     };
 
@@ -136,7 +162,10 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                             </div>
                             <span className="text-xs text-gray-500 uppercase tracking-wider">Read Only</span>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-6 sm:p-10 font-serif text-gray-300 leading-relaxed text-lg max-w-4xl mx-auto w-full scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                        <div
+                            ref={docContentRef}
+                            className="flex-1 overflow-y-auto p-6 sm:p-10 font-serif text-gray-300 leading-relaxed text-lg max-w-4xl mx-auto w-full scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
+                        >
                             {source.content || aiData.summary ? (
                                 <div className="whitespace-pre-wrap">{formatNotesWithCitations(source.content || aiData.summary, seekTo)}</div>
                             ) : (
@@ -149,6 +178,47 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                         </div>
                     </div>
                 )}
+
+                {/* Summary Overlay */}
+                <AnimatePresence>
+                    {showSummary && (
+                        <motion.div
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 100, opacity: 0 }}
+                            className="absolute bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-primary/20 max-h-[80%] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20"
+                        >
+                            <div className="p-4 sm:p-6 pb-20 sm:pb-6">
+                                <div className="flex items-center justify-between mb-4 sticky top-0 bg-black/10 backdrop-blur-sm -mx-4 -mt-4 p-4 z-10 border-b border-white/5">
+                                    <h3 className="font-bold flex items-center gap-2 text-sm sm:text-base text-primary">
+                                        <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        Executive Summary
+                                    </h3>
+                                    <button
+                                        onClick={() => setShowSummary(false)}
+                                        className="p-1 px-2 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-gray-400 hover:text-white transition-colors border border-white/10"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                                <div className="prose prose-invert prose-sm sm:prose-base max-w-none">
+                                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                                        {aiData.summary || "Generating summary..."}
+                                    </p>
+                                    {aiData.the_gravity_shift && (
+                                        <div className="mt-6 p-4 bg-primary/10 border border-primary/20 rounded-xl">
+                                            <h4 className="text-primary font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                                                <Brain className="w-3.5 h-3.5" />
+                                                The Gravity Shift (ELI5)
+                                            </h4>
+                                            <p className="text-sm text-gray-200 italic">{aiData.the_gravity_shift}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Quiz Overlay / Panel - Now an absolute overlay to prevent layout shifts */}
                 <AnimatePresence>
@@ -232,21 +302,37 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                                                         )}
                                                     </div>
 
-                                                    {((attempts[i] || 0) >= 1 && q.timestamp !== undefined && q.timestamp !== null) && (
-                                                        <motion.button
-                                                            initial={{ scale: 0.9, opacity: 0 }}
-                                                            animate={{ scale: 1, opacity: 1 }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                seekTo(q.timestamp || 0);
-                                                                setPlaying(true);
-                                                            }}
-                                                            className="text-[10px] flex items-center gap-1.5 px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/40 transition-all font-bold shadow-lg shadow-secondary/10 whitespace-nowrap"
-                                                        >
-                                                            <Play className="w-3 h-3 fill-current" />
-                                                            Rewatch Relevant Segment ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
-                                                        </motion.button>
-                                                    )}
+                                                    {((attempts[i] || 0) >= 1 && (
+                                                        (source.type === 'video' && q.timestamp !== undefined) ||
+                                                        (source.type === 'pdf' && q.citation)
+                                                    )) && (
+                                                            <motion.button
+                                                                initial={{ scale: 0.9, opacity: 0 }}
+                                                                animate={{ scale: 1, opacity: 1 }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (source.type === 'video') {
+                                                                        seekTo(q.timestamp || 0);
+                                                                        setPlaying(true);
+                                                                    } else if (source.type === 'pdf' && q.citation) {
+                                                                        scrollToCitation(q.citation);
+                                                                    }
+                                                                }}
+                                                                className="text-[10px] flex items-center gap-1.5 px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/40 transition-all font-bold shadow-lg shadow-secondary/10 whitespace-nowrap"
+                                                            >
+                                                                {source.type === 'video' ? (
+                                                                    <>
+                                                                        <Play className="w-3 h-3 fill-current" />
+                                                                        Rewatch Relevant Segment ({Math.floor((q.timestamp || 0) / 60)}:{((q.timestamp || 0) % 60).toString().padStart(2, '0')})
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <Search className="w-3 h-3" />
+                                                                        Locate in Document
+                                                                    </>
+                                                                )}
+                                                            </motion.button>
+                                                        )}
                                                 </div>
                                             </div>
                                         ))}
@@ -298,6 +384,13 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                             {viewMode === 'focus' ? 'Exit Zen' : 'Zen Mode'}
                         </button>
                         <button
+                            onClick={() => setShowSummary(!showSummary)}
+                            className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${showSummary ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                        >
+                            <BookOpen className="w-4 h-4" />
+                            {showSummary ? 'Hide Summary' : 'Summary'}
+                        </button>
+                        <button
                             onClick={() => setShowQuiz(!showQuiz)}
                             className={`p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                         >
@@ -315,24 +408,31 @@ const ContentPane = ({ source, viewMode, setViewMode, onClose, onDelete }) => {
                 </div>
 
                 {/* Row 2: Action buttons on mobile only */}
-                <div className="flex sm:hidden items-center gap-2">
+                <div className="grid grid-cols-2 sm:hidden gap-2">
                     <button
                         onClick={() => setViewMode(viewMode === 'focus' ? 'split' : 'focus')}
-                        className={`flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                        className={`py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${viewMode === 'focus' ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                     >
                         <Maximize2 className="w-3.5 h-3.5" />
                         {viewMode === 'focus' ? 'Exit Zen' : 'Zen'}
                     </button>
                     <button
+                        onClick={() => setShowSummary(!showSummary)}
+                        className={`py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${showSummary ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                    >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        Summary
+                    </button>
+                    <button
                         onClick={() => setShowQuiz(!showQuiz)}
-                        className={`flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
+                        className={`py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold ${showQuiz ? 'bg-primary text-background' : 'bg-white/10 hover:bg-white/20'}`}
                     >
                         <HelpCircle className="w-3.5 h-3.5" />
-                        {showQuiz ? 'Hide Quiz' : 'Quiz'}
+                        Quiz
                     </button>
                     <button
                         onClick={() => setShowGame(true)}
-                        className="flex-1 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20"
+                        className="py-2 rounded-lg transition-colors flex items-center justify-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20"
                     >
                         <Gamepad2 className="w-3.5 h-3.5" />
                         Game
